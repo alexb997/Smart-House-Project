@@ -11,12 +11,8 @@ import java.util.Optional;
 @Service
 public class DeviceService {
 
-    private final DeviceRepository deviceRepository;
-
     @Autowired
-    public DeviceService(DeviceRepository deviceRepository) {
-        this.deviceRepository = deviceRepository;
-    }
+    private DeviceRepository deviceRepository;
 
     public List<Device> getAllDevices() {
         return deviceRepository.findAll();
@@ -26,31 +22,22 @@ public class DeviceService {
         return deviceRepository.findById(id);
     }
 
-    public Device saveOrUpdateDevice(Device device) {
+    public Device createDevice(Device device) {
+        return deviceRepository.save(device);
+    }
+
+    public Device updateDevice(Long id, Device deviceDetails) {
+        Device device = deviceRepository.findById(id).orElseThrow(() -> new RuntimeException("Device not found with id: " + id));
+        device.setName(deviceDetails.getName());
+        device.setStatus(deviceDetails.getStatus());
+        device.setState(deviceDetails.getState());
+        device.setRoom(deviceDetails.getRoom());
+        device.setOwner(deviceDetails.getOwner());
+        device.setType(deviceDetails.getType());
         return deviceRepository.save(device);
     }
 
     public void deleteDevice(Long id) {
         deviceRepository.deleteById(id);
     }
-    public boolean controlDevice(Long id, String action) {
-        Optional<Device> deviceOpt = deviceRepository.findById(id);
-        if (deviceOpt.isPresent()) {
-            Device device = deviceOpt.get();
-            switch (action.toLowerCase()) {
-                case "turnon":
-                    device.setStatus("on");
-                    break;
-                case "turnoff":
-                    device.setStatus("off");
-                    break;
-                default:
-                    return false;  // Invalid action
-            }
-            deviceRepository.save(device);
-            return true;
-        }
-        return false;
-    }
-
 }

@@ -11,12 +11,8 @@ import java.util.Optional;
 @Service
 public class RoomService {
 
-    private final RoomRepository roomRepository;
-
     @Autowired
-    public RoomService(RoomRepository roomRepository) {
-        this.roomRepository = roomRepository;
-    }
+    private RoomRepository roomRepository;
 
     public List<Room> getAllRooms() {
         return roomRepository.findAll();
@@ -26,7 +22,14 @@ public class RoomService {
         return roomRepository.findById(id);
     }
 
-    public Room saveOrUpdateRoom(Room room) {
+    public Room createRoom(Room room) {
+        return roomRepository.save(room);
+    }
+
+    public Room updateRoom(Long id, Room roomDetails) {
+        Room room = roomRepository.findById(id).orElseThrow(() -> new RuntimeException("Room not found with id: " + id));
+        room.setName(roomDetails.getName());
+        room.setDevices(roomDetails.getDevices());
         return roomRepository.save(room);
     }
 

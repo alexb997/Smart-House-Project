@@ -1,10 +1,8 @@
 package com.projects.smarthouse_backend.controller;
 
-import com.projects.smarthouse_backend.requests.ControlRequest;
 import com.projects.smarthouse_backend.model.Device;
 import com.projects.smarthouse_backend.service.DeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,39 +12,31 @@ import java.util.Optional;
 @RequestMapping("/api/devices")
 public class DeviceController {
 
-    private final DeviceService deviceService;
-
     @Autowired
-    public DeviceController(DeviceService deviceService) {
-        this.deviceService = deviceService;
-    }
+    private DeviceService deviceService;
 
     @GetMapping
-    public ResponseEntity<List<Device>> getAllDevices() {
-        List<Device> devices = deviceService.getAllDevices();
-        return ResponseEntity.ok(devices);
+    public List<Device> getAllDevices() {
+        return deviceService.getAllDevices();
     }
 
-    @GetMapping("/{deviceId}")
-    public ResponseEntity<Device> getDeviceById(@PathVariable Long deviceId) {
-        Optional<Device> device = deviceService.getDeviceById(deviceId);
-        return device.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    @GetMapping("/{id}")
+    public Optional<Device> getDeviceById(@PathVariable Long id) {
+        return deviceService.getDeviceById(id);
     }
 
-    @PostMapping("/{deviceId}/control")
-    public ResponseEntity<?> controlDevice(@PathVariable Long deviceId, @RequestBody ControlRequest request) {
-        boolean success = deviceService.controlDevice(deviceId, request.getAction());
-        if (success) {
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.badRequest().body("Failed to control device");
-        }
+    @PostMapping
+    public Device createDevice(@RequestBody Device device) {
+        return deviceService.createDevice(device);
     }
 
+    @PutMapping("/{id}")
+    public Device updateDevice(@PathVariable Long id, @RequestBody Device device) {
+        return deviceService.updateDevice(id, device);
+    }
 
-    @DeleteMapping("/{deviceId}")
-    public ResponseEntity<?> deleteDevice(@PathVariable Long deviceId) {
-        deviceService.deleteDevice(deviceId);
-        return ResponseEntity.ok().build();
+    @DeleteMapping("/{id}")
+    public void deleteDevice(@PathVariable Long id) {
+        deviceService.deleteDevice(id);
     }
 }
