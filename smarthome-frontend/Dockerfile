@@ -1,14 +1,27 @@
-# Use OpenJDK 17 as the base image
-FROM openjdk:17-jdk-alpine
+# Use Node.js to build the React app
+FROM node:16-alpine as build
 
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy the built jar file into the container
-COPY target/smarthome-0.0.1-SNAPSHOT.jar app.jar
+# Copy the package.json and install dependencies
+COPY package*.json ./
+RUN npm install
 
-# Expose the port the application will run on
-EXPOSE 8080
+# Copy the React app source code into the container
+COPY . .
 
-# Command to run the application
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Build the React app for production
+RUN npm run build
+
+# Use Nginx to serve the static files
+FROM nginx:alpine
+
+# Copy the built files from the build stage
+COPY --from=build /app/build /usr/share/nginx/html
+
+# Expose port 80 to the outside
+EXPOSE 80
+
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"]
