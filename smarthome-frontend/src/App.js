@@ -13,8 +13,6 @@ const App = () => {
     <Router>
       <Routes>
         <Route path="/" element={<Dashboard />} />
-        <Route path="/logs" element={<DeviceLogs />} />
-        <Route path="/settings" element={<Settings />} />
         <Route path="/devices" element={<DeviceList />} />
         <Route path="/rooms" element={<RoomList />} />
         <Route path="/users" element={<UserList />} />
