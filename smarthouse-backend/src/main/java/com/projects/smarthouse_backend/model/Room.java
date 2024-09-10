@@ -19,6 +19,4 @@ public class Room {
 
     private String name;
 
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
-    private List<Device> devices;
 }

@@ -3,10 +3,10 @@ package com.projects.smarthouse_backend.controller;
 import com.projects.smarthouse_backend.model.Room;
 import com.projects.smarthouse_backend.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/rooms")
@@ -21,7 +21,7 @@ public class RoomController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Room> getRoomById(@PathVariable Long id) {
+    public ResponseEntity<Room> getRoomById(@PathVariable Long id) {
         return roomService.getRoomById(id);
     }
 
@@ -31,12 +31,12 @@ public class RoomController {
     }
 
     @PutMapping("/{id}")
-    public Room updateRoom(@PathVariable Long id, @RequestBody Room room) {
-        return roomService.updateRoom(id, room);
+    public ResponseEntity<Room> updateRoom(@PathVariable Long id, @RequestBody Room roomDetails) {
+        return roomService.updateRoom(id, roomDetails);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteRoom(@PathVariable Long id) {
-        roomService.deleteRoom(id);
+    public ResponseEntity<Void> deleteRoom(@PathVariable Long id) {
+        return roomService.deleteRoom(id);
     }
 }

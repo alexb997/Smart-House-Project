@@ -3,10 +3,10 @@ package com.projects.smarthouse_backend.service;
 import com.projects.smarthouse_backend.model.User;
 import com.projects.smarthouse_backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserService {
@@ -18,24 +18,32 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public Optional<User> getUserById(Long id) {
-        return userRepository.findById(id);
+    public ResponseEntity<User> getUserById(Long id) {
+        User user = userRepository.findById(id).orElse(null);
+        return user != null ? ResponseEntity.ok(user) : ResponseEntity.notFound().build();
     }
 
     public User createUser(User user) {
         return userRepository.save(user);
     }
 
-    public User updateUser(Long id, User userDetails) {
-        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+    public ResponseEntity<User> updateUser(Long id, User userDetails) {
+        User user = userRepository.findById(id).orElse(null);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
         user.setUsername(userDetails.getUsername());
         user.setPassword(userDetails.getPassword());
         user.setEmail(userDetails.getEmail());
-        user.setDevices(userDetails.getDevices());
-        return userRepository.save(user);
+        return ResponseEntity.ok(userRepository.save(user));
     }
 
-    public void deleteUser(Long id) {
-        userRepository.deleteById(id);
+    public ResponseEntity<Void> deleteUser(Long id) {
+        User user = userRepository.findById(id).orElse(null);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+        userRepository.delete(user);
+        return ResponseEntity.noContent().build();
     }
 }

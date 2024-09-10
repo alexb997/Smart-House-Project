@@ -3,10 +3,10 @@ package com.projects.smarthouse_backend.controller;
 import com.projects.smarthouse_backend.model.Device;
 import com.projects.smarthouse_backend.service.DeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/devices")
@@ -21,7 +21,7 @@ public class DeviceController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Device> getDeviceById(@PathVariable Long id) {
+    public ResponseEntity<Device> getDeviceById(@PathVariable Long id) {
         return deviceService.getDeviceById(id);
     }
 
@@ -31,12 +31,12 @@ public class DeviceController {
     }
 
     @PutMapping("/{id}")
-    public Device updateDevice(@PathVariable Long id, @RequestBody Device device) {
-        return deviceService.updateDevice(id, device);
+    public ResponseEntity<Device> updateDevice(@PathVariable Long id, @RequestBody Device deviceDetails) {
+        return deviceService.updateDevice(id, deviceDetails);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteDevice(@PathVariable Long id) {
-        deviceService.deleteDevice(id);
+    public ResponseEntity<Void> deleteDevice(@PathVariable Long id) {
+        return deviceService.deleteDevice(id);
     }
 }

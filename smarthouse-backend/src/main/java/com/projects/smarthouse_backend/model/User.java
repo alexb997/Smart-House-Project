@@ -21,8 +21,6 @@ public class User {
     private String password;
     private String email;
 
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
-    private List<Device> devices;
 
 
 }

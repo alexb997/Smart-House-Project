@@ -31,10 +31,6 @@ public class Device {
 
     private String state;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User owner;
-
 
 }
 

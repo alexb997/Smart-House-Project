@@ -3,10 +3,10 @@ package com.projects.smarthouse_backend.service;
 import com.projects.smarthouse_backend.model.Device;
 import com.projects.smarthouse_backend.repository.DeviceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class DeviceService {
@@ -18,26 +18,34 @@ public class DeviceService {
         return deviceRepository.findAll();
     }
 
-    public Optional<Device> getDeviceById(Long id) {
-        return deviceRepository.findById(id);
+    public ResponseEntity<Device> getDeviceById(Long id) {
+        Device device = deviceRepository.findById(id).orElse(null);
+        return device != null ? ResponseEntity.ok(device) : ResponseEntity.notFound().build();
     }
 
     public Device createDevice(Device device) {
         return deviceRepository.save(device);
     }
 
-    public Device updateDevice(Long id, Device deviceDetails) {
-        Device device = deviceRepository.findById(id).orElseThrow(() -> new RuntimeException("Device not found with id: " + id));
+    public ResponseEntity<Device> updateDevice(Long id, Device deviceDetails) {
+        Device device = deviceRepository.findById(id).orElse(null);
+        if (device == null) {
+            return ResponseEntity.notFound().build();
+        }
         device.setName(deviceDetails.getName());
+        device.setType(deviceDetails.getType());
         device.setStatus(deviceDetails.getStatus());
         device.setState(deviceDetails.getState());
         device.setRoom(deviceDetails.getRoom());
-        device.setOwner(deviceDetails.getOwner());
-        device.setType(deviceDetails.getType());
-        return deviceRepository.save(device);
+        return ResponseEntity.ok(deviceRepository.save(device));
     }
 
-    public void deleteDevice(Long id) {
-        deviceRepository.deleteById(id);
+    public ResponseEntity<Void> deleteDevice(Long id) {
+        Device device = deviceRepository.findById(id).orElse(null);
+        if (device == null) {
+            return ResponseEntity.notFound().build();
+        }
+        deviceRepository.delete(device);
+        return ResponseEntity.noContent().build();
     }
 }
