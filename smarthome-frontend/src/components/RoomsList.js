@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Button, Modal, Form, Table } from 'react-bootstrap';
+import { Button, Modal, Form, Card, Container, Row, Col } from 'react-bootstrap';
+import { FaEdit, FaTrash } from 'react-icons/fa'; // Import icons for better UI
 
 const RoomList = () => {
     const [rooms, setRooms] = useState([]);
@@ -39,30 +40,28 @@ const RoomList = () => {
     };
 
     return (
-        <div className="container mt-4">
-            <h2>Rooms</h2>
-            <Button variant="primary" onClick={() => handleShowModal()}>Add Room</Button>
-            <Table striped bordered hover className="mt-3">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {rooms.map(room => (
-                        <tr key={room.id}>
-                            <td>{room.id}</td>
-                            <td>{room.name}</td>
-                            <td>
-                                <Button variant="warning" onClick={() => handleShowModal(room)}>Edit</Button>{' '}
-                                <Button variant="danger" onClick={() => handleDelete(room.id)}>Delete</Button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </Table>
+        <Container className="mt-4">
+            <h2 className="mb-4 text-center">Rooms</h2>
+            <Button variant="primary" className="mb-3" onClick={() => handleShowModal()}>Add Room</Button>
+            <Row>
+                {rooms.map(room => (
+                    <Col md={4} key={room.id} className="mb-4">
+                        <Card>
+                            <Card.Body>
+                                <Card.Title>{room.name}</Card.Title>
+                                <div className="d-flex justify-content-between">
+                                    <Button variant="warning" onClick={() => handleShowModal(room)}>
+                                        <FaEdit /> Edit
+                                    </Button>
+                                    <Button variant="danger" onClick={() => handleDelete(room.id)}>
+                                        <FaTrash /> Delete
+                                    </Button>
+                                </div>
+                            </Card.Body>
+                        </Card>
+                    </Col>
+                ))}
+            </Row>
 
             <Modal show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header closeButton>
@@ -72,7 +71,12 @@ const RoomList = () => {
                     <Form>
                         <Form.Group controlId="roomName">
                             <Form.Label>Name</Form.Label>
-                            <Form.Control type="text" placeholder="Enter room name" value={currentRoom.name || ''} onChange={(e) => setCurrentRoom({ ...currentRoom, name: e.target.value })} />
+                            <Form.Control
+                                type="text"
+                                placeholder="Enter room name"
+                                value={currentRoom.name || ''}
+                                onChange={(e) => setCurrentRoom({ ...currentRoom, name: e.target.value })}
+                            />
                         </Form.Group>
                     </Form>
                 </Modal.Body>
@@ -81,7 +85,7 @@ const RoomList = () => {
                     <Button variant="primary" onClick={handleSave}>{isEditing ? 'Save Changes' : 'Add Room'}</Button>
                 </Modal.Footer>
             </Modal>
-        </div>
+        </Container>
     );
 };
 

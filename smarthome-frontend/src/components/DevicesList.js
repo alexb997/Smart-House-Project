@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import instance from "../axios.js";
-import { Button, Modal, Form, Table } from "react-bootstrap";
+import { Button, Modal, Form, Card, Container, Row, Col } from "react-bootstrap";
+import { FaEdit, FaTrash } from 'react-icons/fa'; // Import icons for better UI
 
 const DeviceList = () => {
   const [devices, setDevices] = useState([]);
@@ -39,46 +40,32 @@ const DeviceList = () => {
   };
 
   return (
-    <div className="container mt-4">
-      <h2>Devices</h2>
-      <Button variant="primary" onClick={() => handleShowModal()}>
+    <Container className="mt-4">
+      <h2 className="mb-4 text-center">Devices</h2>
+      <Button variant="primary" className="mb-3" onClick={() => handleShowModal()}>
         Add Device
       </Button>
-      <Table striped bordered hover className="mt-3">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {devices.map((device) => (
-            <tr key={device.id}>
-              <td>{device.id}</td>
-              <td>{device.name}</td>
-              <td>{device.type}</td>
-              <td>{device.status}</td>
-              <td>
-                <Button
-                  variant="warning"
-                  onClick={() => handleShowModal(device)}
-                >
-                  Edit
-                </Button>{" "}
-                <Button
-                  variant="danger"
-                  onClick={() => handleDelete(device.id)}
-                >
-                  Delete
-                </Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+      <Row>
+        {devices.map((device) => (
+          <Col md={4} key={device.id} className="mb-4">
+            <Card>
+              <Card.Body>
+                <Card.Title>{device.name}</Card.Title>
+                <Card.Subtitle className="mb-2 text-muted">{device.type}</Card.Subtitle>
+                <Card.Text>Status: {device.status}</Card.Text>
+                <div className="d-flex justify-content-between">
+                  <Button variant="warning" onClick={() => handleShowModal(device)}>
+                    <FaEdit /> Edit
+                  </Button>
+                  <Button variant="danger" onClick={() => handleDelete(device.id)}>
+                    <FaTrash /> Delete
+                  </Button>
+                </div>
+              </Card.Body>
+            </Card>
+          </Col>
+        ))}
+      </Row>
 
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
@@ -136,7 +123,7 @@ const DeviceList = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-    </div>
+    </Container>
   );
 };
 

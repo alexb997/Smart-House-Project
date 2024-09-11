@@ -8,9 +8,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:3000")
+
 @RestController
 @RequestMapping("/api/devices")
+@CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*")
 public class DeviceController {
 
     @Autowired
