@@ -1,16 +1,14 @@
 package com.projects.smarthouse_backend.model;
 
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class User {
 
     @Id
@@ -18,9 +16,11 @@ public class User {
     private Long id;
 
     private String username;
-    private String password;
-    private String email;
+    private String password; // Store hashed passwords in real applications
 
+    @OneToMany(mappedBy = "user")
+    private List<Room> rooms;
 
-
+    @OneToMany(mappedBy = "user")
+    private List<Device> devices;
 }

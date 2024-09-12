@@ -1,16 +1,14 @@
 package com.projects.smarthouse_backend.model;
 
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class Room {
 
     @Id
@@ -19,4 +17,10 @@ public class Room {
 
     private String name;
 
+    @OneToMany(mappedBy = "room")
+    private List<Device> devices;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }
