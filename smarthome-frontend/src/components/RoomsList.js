@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import instance from '../axios';
 import { Button, Modal, Form, Card, Container, Row, Col } from 'react-bootstrap';
 import { FaEdit, FaTrash } from 'react-icons/fa'; // Import icons for better UI
 
@@ -14,12 +14,12 @@ const RoomList = () => {
     }, []);
 
     const fetchRooms = async () => {
-        const response = await axios.get('/api/rooms');
+        const response = await instance.get('/api/rooms');
         setRooms(response.data);
     };
 
     const handleDelete = async (id) => {
-        await axios.delete(`/api/rooms/${id}`);
+        await instance.delete(`/api/rooms/${id}`);
         fetchRooms();
     };
 
@@ -31,9 +31,9 @@ const RoomList = () => {
 
     const handleSave = async () => {
         if (isEditing) {
-            await axios.put(`/api/rooms/${currentRoom.id}`, currentRoom);
+            await instance.put(`/api/rooms/${currentRoom.id}`, currentRoom);
         } else {
-            await axios.post('/api/rooms', currentRoom);
+            await instance.post('/api/rooms', currentRoom);
         }
         setShowModal(false);
         fetchRooms();

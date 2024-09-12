@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import instance from '../axios';
 import { Button, Modal, Form, Table } from 'react-bootstrap';
 
 const UserList = () => {
@@ -13,12 +13,12 @@ const UserList = () => {
     }, []);
 
     const fetchUsers = async () => {
-        const response = await axios.get('/api/users');
+        const response = await instance.get('/api/users');
         setUsers(response.data);
     };
 
     const handleDelete = async (id) => {
-        await axios.delete(`/api/users/${id}`);
+        await instance.delete(`/api/users/${id}`);
         fetchUsers();
     };
 
@@ -30,9 +30,9 @@ const UserList = () => {
 
     const handleSave = async () => {
         if (isEditing) {
-            await axios.put(`/api/users/${currentUser.id}`, currentUser);
+            await instance.put(`/api/users/${currentUser.id}`, currentUser);
         } else {
-            await axios.post('/api/users', currentUser);
+            await instance.post('/api/users', currentUser);
         }
         setShowModal(false);
         fetchUsers();
