@@ -1,36 +1,20 @@
-import React, { useState } from "react";
-import { Card, Button } from "react-bootstrap";
-import DeviceControlModal from "../modals/DeviceControlModal";
+import React from 'react';
+import { Card, Button } from 'react-bootstrap';
 
-const DeviceCard = ({ device }) => {
-  const [isModalOpen, setModalOpen] = useState(false);
-
-  const handleToggleDevice = () => {
-    alert("toggle check");
-  };
-
-  return (
-    <>
-      <Card style={{ width: "18rem" }} className="m-2">
-        <Card.Body>
-          <Card.Title>{device.name}</Card.Title>
-          <Card.Text>Status: {device.status ? "On" : "Off"}</Card.Text>
-          <Button
-            variant={device.status ? "danger" : "success"}
-            onClick={handleToggleDevice}
-          >
-            {device.status ? "Turn Off" : "Turn On"}
-          </Button>
-        </Card.Body>
-      </Card>
-
-      <DeviceControlModal
-        device={device}
-        isOpen={isModalOpen}
-        onClose={() => setModalOpen(false)}
-      />
-    </>
-  );
+const DeviceCard = ({ device, onClick }) => {
+    return (
+        <Card style={{ width: '18rem' }}>
+            <Card.Body>
+                <Card.Title>{device.type}</Card.Title>
+                <Card.Subtitle className="mb-2 text-muted">Status: {device.status}</Card.Subtitle>
+                {device.brightness && <Card.Text>Brightness: {device.brightness}%</Card.Text>}
+                {device.temperature && <Card.Text>Temperature: {device.temperature}°C</Card.Text>}
+                <Button variant="primary" onClick={onClick}>
+                    Manage
+                </Button>
+            </Card.Body>
+        </Card>
+    );
 };
 
 export default DeviceCard;

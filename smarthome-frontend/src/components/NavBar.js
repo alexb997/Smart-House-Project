@@ -1,26 +1,23 @@
 import React from 'react';
-import { Navbar as BootstrapNavbar, Nav, Container } from 'react-bootstrap';
+import { Navbar, Nav, Container } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
-const Navbar = () => {
+const NavbarComponent = () => {
     return (
-        <BootstrapNavbar bg="dark" variant="dark" expand="lg">
+        <Navbar bg="light" expand="lg">
             <Container>
-                <BootstrapNavbar.Brand href="/">SmartHome Dashboard</BootstrapNavbar.Brand>
-                <BootstrapNavbar.Toggle aria-controls="basic-navbar-nav" />
-                <BootstrapNavbar.Collapse id="basic-navbar-nav">
+                <Navbar.Brand as={Link} to="/">Smart Home</Navbar.Brand>
+                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
-                        <Nav.Link href="/devices">Devices</Nav.Link>
-                        <Nav.Link href="/logs">Device Logs</Nav.Link>
-                        <Nav.Link href="/settings">Settings</Nav.Link>
+                        <Nav.Link as={Link} to="/">Dashboard</Nav.Link>
+                        <Nav.Link as={Link} to="/logs">Device Logs</Nav.Link>
+                        <Nav.Link as={Link} to="/settings">System Settings</Nav.Link>
                     </Nav>
-                    <Nav>
-                        <Nav.Link href="/profile">Profile</Nav.Link>
-                        <Nav.Link href="/logout">Logout</Nav.Link>
-                    </Nav>
-                </BootstrapNavbar.Collapse>
+                </Navbar.Collapse>
             </Container>
-        </BootstrapNavbar>
+        </Navbar>
     );
 };
 
-export default Navbar;
+export default NavbarComponent;

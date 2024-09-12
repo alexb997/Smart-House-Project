@@ -1,24 +1,26 @@
-import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Dashboard from "./pages/Dashboard";
-import DeviceLogs from "./pages/DeviceLogs";
-import Settings from "./pages/Settings";
-import "./App.css";
-import DeviceList from "./components/DevicesList";
-import RoomList from "./components/RoomsList";
-import UserList from "./components/UserList";
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Navbar from './components/NavBar';
+import { Container } from 'react-bootstrap';
+import Dashboard from './pages/Dashboard';
+import DeviceLogs from './components/DeviceLogs';
+import SystemSettings from './components/SystemSettings';
+import Footer from './components/Footer';
 
 const App = () => {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/devices" element={<DeviceList />} />
-        <Route path="/rooms" element={<RoomList />} />
-        <Route path="/users" element={<UserList />} />
-      </Routes>
-    </Router>
-  );
+    return (
+        <Router>
+            <Navbar />
+            <Container>
+                <Routes>
+                    <Route exact path="/" element={<Dashboard />} />
+                    <Route path="/logs" element={<DeviceLogs />} />
+                    <Route path="/settings" element={<SystemSettings />} />
+                </Routes>
+            </Container>
+            <Footer />
+        </Router>
+    );
 };
 
 export default App;
