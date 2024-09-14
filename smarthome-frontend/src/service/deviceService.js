@@ -10,3 +10,5 @@ export const controlDevice = (deviceId, action) =>
 export const getDeviceLogs = () => axios.get(`${API_BASE_URL}/logs`);
 export const createDevice = (deviceData) =>
   axios.post(`${API_BASE_URL}/devices`, deviceData);
+export const removeDevice = (deviceId) =>
+  axios.delete(`${API_BASE_URL}/devices/${deviceId}`);

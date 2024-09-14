@@ -31,20 +31,20 @@ const Dashboard = () => {
 
   const handleOpenModal = (device) => {
     setSelectedDevice(device);
-    setModalOpen(true);
+    setModalOpen(!modalOpen);
   };
 
   const handleCloseModal = () => {
-    setModalOpen(false);
+    setModalOpen(!modalOpen);
     setSelectedDevice(null);
   };
 
   const handleOpenCreateModal = () => {
-    setCreateModalOpen(true);
+    setCreateModalOpen(!createModalOpen);
   };
 
   const handleCloseCreateModal = () => {
-    setCreateModalOpen(false);
+    setCreateModalOpen(!createModalOpen);
   };
 
   return (
@@ -68,12 +68,17 @@ const Dashboard = () => {
       {!loading && !error && devices.length > 0 && (
         <Row>
           {devices.map((device) => (
-            <Col xs={12} sm={6} md={4} key={device.deviceId} className="mb-3">
-              <DeviceCard
-                device={device}
-                onClick={() => handleOpenModal(device)}
-              />
-            </Col>
+            <div key={device.id}>
+              <Col xs={12} sm={6} md={4} className="mb-3">
+                <DeviceCard
+                  device={device}
+                  onClick={() => {
+                    handleOpenModal(device);
+                  }}
+                  key={device.deviceId + 1}
+                />
+              </Col>
+            </div>
           ))}
         </Row>
       )}
@@ -88,7 +93,7 @@ const Dashboard = () => {
         <DeviceModal
           device={selectedDevice}
           show={modalOpen}
-          onClose={handleCloseModal}
+          handleClose={handleCloseModal}
         />
       )}
 

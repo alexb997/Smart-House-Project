@@ -1,7 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Button, Form, ToggleButtonGroup, ToggleButton } from "react-bootstrap";
+import {
+  Modal,
+  Button,
+  Form,
+  ToggleButtonGroup,
+  ToggleButton,
+} from "react-bootstrap";
 
-const DeviceControlModal = ({ show, handleClose, device, handleDeviceUpdate }) => {
+const DeviceControlModal = ({
+  show,
+  handleClose,
+  device,
+  handleDeviceUpdate,
+}) => {
   const [formState, setFormState] = useState({
     status: device?.status || "OFF",
     brightness: device?.brightness || 50,
@@ -50,7 +61,10 @@ const DeviceControlModal = ({ show, handleClose, device, handleDeviceUpdate }) =
       return;
     }
 
-    if (device?.type === "THERMOSTAT" && (temperature < 60 || temperature > 90)) {
+    if (
+      device?.type === "THERMOSTAT" &&
+      (temperature < 60 || temperature > 90)
+    ) {
       setError("Temperature must be between 60 and 90.");
       return;
     }
@@ -66,6 +80,7 @@ const DeviceControlModal = ({ show, handleClose, device, handleDeviceUpdate }) =
     } finally {
       setLoading(false);
     }
+
   };
 
   return (
@@ -125,7 +140,11 @@ const DeviceControlModal = ({ show, handleClose, device, handleDeviceUpdate }) =
         <Button variant="secondary" onClick={handleClose}>
           Close
         </Button>
-        <Button variant="primary" onClick={handleSaveChanges} disabled={loading}>
+        <Button
+          variant="primary"
+          onClick={handleSaveChanges}
+          disabled={loading}
+        >
           {loading ? "Saving..." : "Save Changes"}
         </Button>
       </Modal.Footer>

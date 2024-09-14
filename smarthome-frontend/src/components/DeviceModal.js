@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { Modal, Button, Form, InputGroup, Spinner, Alert } from "react-bootstrap";
+import {
+  Modal,
+  Button,
+  Form,
+  InputGroup,
+  Spinner,
+  Alert,
+} from "react-bootstrap";
 import { updateDeviceSettings } from "../service/deviceService";
 import PropTypes from "prop-types";
 
@@ -63,11 +70,7 @@ const DeviceModal = ({ device, show, handleClose }) => {
           <strong>Status:</strong> {device.status ? "On" : "Off"}
         </p>
 
-        {error && (
-          <Alert variant="danger">
-            {error}
-          </Alert>
-        )}
+        {error && <Alert variant="danger">{error}</Alert>}
 
         {device.type === "LIGHT" && (
           <Form.Group controlId="brightness">
@@ -120,9 +123,17 @@ const DeviceModal = ({ device, show, handleClose }) => {
           disabled={loading}
         >
           {loading ? (
-            <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+            <Spinner
+              as="span"
+              animation="border"
+              size="sm"
+              role="status"
+              aria-hidden="true"
+            />
+          ) : device.status ? (
+            "Turn Off"
           ) : (
-            device.status ? "Turn Off" : "Turn On"
+            "Turn On"
           )}
         </Button>
       </Modal.Footer>
@@ -132,7 +143,7 @@ const DeviceModal = ({ device, show, handleClose }) => {
 
 DeviceModal.propTypes = {
   device: PropTypes.shape({
-    id: PropTypes.string.isRequired,
+    id: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,
     status: PropTypes.bool.isRequired,

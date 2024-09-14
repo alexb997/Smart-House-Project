@@ -31,24 +31,24 @@ const DeviceCard = ({ device, onClick }) => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onClick={handleClick}
+      key={device.id + 2}
       className="device-card"
     >
       <Card.Body>
         <Card.Title>{device.name || "Unnamed Device"}</Card.Title>{" "}
-        {/* Fallback for device name */}
         <Card.Subtitle className="mb-2 text-muted">
           Type: {device.type}
         </Card.Subtitle>
         <Card.Subtitle className="mb-2 text-muted">
           Status: {device.status ? "On" : "Off"}
         </Card.Subtitle>
-        {device.brightness !== undefined && (
+        {device.brightness !== null && (
           <Card.Text>Brightness: {device.brightness}%</Card.Text>
         )}
-        {device.temperature !== undefined && (
+        {device.temperature !== null && (
           <Card.Text>Temperature: {device.temperature}°C</Card.Text>
         )}
-        {device.motionDetectionEnabled !== undefined && (
+        {device.motionDetectionEnabled !== null && (
           <Card.Text>
             Motion Detection:{" "}
             {device.motionDetectionEnabled ? "Enabled" : "Disabled"}
