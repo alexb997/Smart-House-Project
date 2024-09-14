@@ -27,6 +27,10 @@ public class DeviceService {
         return deviceRepository.findByType(type);
     }
 
+    public List<Device> getDevicesByRoomId(Long roomId) {
+        return deviceRepository.findByRoomId(roomId);
+    }
+
     public Device saveDevice(Device device) {
         return deviceRepository.save(device);
     }

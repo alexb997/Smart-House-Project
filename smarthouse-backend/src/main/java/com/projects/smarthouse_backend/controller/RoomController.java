@@ -1,5 +1,6 @@
 package com.projects.smarthouse_backend.controller;
 
+import com.projects.smarthouse_backend.model.Device;
 import com.projects.smarthouse_backend.model.Room;
 import com.projects.smarthouse_backend.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,15 @@ public class RoomController {
     public ResponseEntity<Room> getRoomById(@PathVariable Long roomId) {
         Optional<Room> room = roomService.getRoomById(roomId);
         return room.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/{roomId}/devices")
+    public ResponseEntity<List<Device>> getRoomDevices(@PathVariable Long roomId) {
+        Optional<Room> room = roomService.getRoomById(roomId);
+        if (room.isPresent()) {
+            return getRoomDevices(roomId);
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @PostMapping

@@ -1,20 +1,27 @@
 import React, { useState, useEffect } from "react";
 import DeviceCard from "../components/DeviceCard";
 import DeviceModal from "../components/DeviceModal";
-import { useParams } from "react-router-dom"; // Get the room name from the route
+import { useParams, useLocation } from "react-router-dom";
+import { getRoomDevices } from "../service/roomService";
 
 const RoomDeviceDashboard = () => {
-  const { roomName } = useParams(); // Extract roomName from URL parameters
+  const { roomName } = useParams();
+  const location = useLocation();
+  const roomId = location.state?.roomId;
   const [devices, setDevices] = useState([]);
   const [selectedDevice, setSelectedDevice] = useState(null);
 
   useEffect(() => {
-    // Fetch devices in the room based on roomName
-    fetch(`/api/rooms/${roomName}/devices`)
-      .then((response) => response.json())
-      .then((data) => setDevices(data))
-      .catch((error) => console.error("Error fetching devices:", error));
-  }, [roomName]);
+    const fetchDevices = async () => {
+      try {
+        const response = await getRoomDevices(roomId);
+        setDevices(response.data);
+      } catch (error) {
+        console.error("Error fetching devices:", error);
+      }
+    };
+    fetchDevices();
+  }, [roomName, roomId]);
 
   const handleDeviceSelect = (device) => {
     setSelectedDevice(device);
@@ -26,7 +33,7 @@ const RoomDeviceDashboard = () => {
 
   return (
     <div className="device-dashboard">
-      <h2>Devices in Room {roomName}</h2>
+      <h2>Devices in {roomName}</h2>
       <div className="device-grid">
         {devices.map((device) => (
           <DeviceCard

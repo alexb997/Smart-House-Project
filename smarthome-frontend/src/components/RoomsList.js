@@ -67,9 +67,8 @@ const RoomList = () => {
     setCurrentRoom({ name: "" });
   };
 
-  // Function to handle redirection when clicking on a room card
-  const handleRoomClick = (roomName) => {
-    navigate(`/${roomName}/devices`); // Navigate to the room's devices page
+  const handleRoomClick = (roomName,roomId) => {
+    navigate(`/${roomName}/devices`, { state: { roomId: roomId } });
   };
 
   return (
@@ -85,14 +84,14 @@ const RoomList = () => {
       <Row>
         {rooms.map((room) => (
           <Col md={4} key={room.id} className="mb-4">
-            <Card onClick={() => handleRoomClick(room.name)} style={{ cursor: 'pointer' }}> {/* Make the card clickable */}
+            <Card onClick={() => handleRoomClick(room.name,room.id)} style={{ cursor: 'pointer' }}>
               <Card.Body>
                 <Card.Title>{room.name}</Card.Title>
                 <div className="d-flex justify-content-between">
                   <Button
                     variant="warning"
                     onClick={(e) => {
-                      e.stopPropagation(); // Prevents card click from triggering
+                      e.stopPropagation();
                       handleShowModal(room);
                     }}
                   >
@@ -101,7 +100,7 @@ const RoomList = () => {
                   <Button
                     variant="danger"
                     onClick={(e) => {
-                      e.stopPropagation(); // Prevents card click from triggering
+                      e.stopPropagation();
                       handleDelete(room.id);
                     }}
                   >

@@ -8,6 +8,7 @@ import SystemSettings from "./components/SystemSettings";
 import RoomList from "./components/RoomsList";
 import Footer from "./components/Footer";
 import RoomDeviceDashboard from "./pages/RoomDeviceDashboard";
+import UserForm from "./pages/UserForm";
 
 const App = () => {
   return (
@@ -19,10 +20,8 @@ const App = () => {
           <Route path="/logs" element={<DeviceLogs />} />
           <Route path="/settings" element={<SystemSettings />} />
           <Route path="/rooms" element={<RoomList />} />
-          <Route
-            path="/rooms/:roomName/devices"
-            element={<RoomDeviceDashboard />}
-          />
+          <Route path="/:roomName/devices" element={<RoomDeviceDashboard />} />
+          <Route path="/create-user" element={<UserForm />} />
         </Routes>
       </Container>
       <Footer />
