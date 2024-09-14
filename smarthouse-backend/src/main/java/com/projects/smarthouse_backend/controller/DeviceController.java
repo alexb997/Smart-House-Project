@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -46,6 +47,27 @@ public class DeviceController {
         }
         return ResponseEntity.notFound().build();
     }
+
+    @PutMapping("/{deviceId}/control")
+    public ResponseEntity<Device> controlDevice(@PathVariable Long deviceId, @RequestBody Map<String, Boolean> action) {
+        Optional<Device> optionalDevice = deviceService.getDeviceById(deviceId);
+
+        if (optionalDevice.isPresent()) {
+            Device device = optionalDevice.get();
+            Boolean turnOn = action.get("status");
+
+            if (turnOn != null) {
+                device.setStatus(turnOn);
+                Device updatedDevice = deviceService.saveDevice(device);
+                return ResponseEntity.ok(updatedDevice);
+            } else {
+                return ResponseEntity.badRequest().build();
+            }
+        } else {
+            return ResponseEntity.notFound().build(); // If device not found
+        }
+    }
+
 
     @DeleteMapping("/{deviceId}")
     public ResponseEntity<Void> deleteDevice(@PathVariable Long deviceId) {

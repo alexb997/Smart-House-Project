@@ -1,13 +1,25 @@
-import React from 'react';
-import { Modal, Button, Form, ToggleButtonGroup, ToggleButton } from 'react-bootstrap';
+import React from "react";
+import {
+  Modal,
+  Button,
+  Form,
+  ToggleButtonGroup,
+  ToggleButton,
+} from "react-bootstrap";
 
-const DeviceControlModal = ({ show, handleClose, device, handleDeviceUpdate }) => {
+const DeviceControlModal = ({
+  show,
+  handleClose,
+  device,
+  handleDeviceUpdate,
+}) => {
   const [status, setStatus] = React.useState(device?.status || "OFF");
-  const [brightness, setBrightness] = React.useState(device?.brightness || 50); // Assuming a default value of 50
-  const [temperature, setTemperature] = React.useState(device?.temperature || 72); // Assuming a default temperature value for AC
+  const [brightness, setBrightness] = React.useState(device?.brightness || 50);
+  const [temperature, setTemperature] = React.useState(
+    device?.temperature || 72
+  );
 
   const handleSaveChanges = () => {
-    // Implement logic to update the device settings
     handleDeviceUpdate({ ...device, status, brightness, temperature });
     handleClose();
   };
@@ -38,8 +50,7 @@ const DeviceControlModal = ({ show, handleClose, device, handleDeviceUpdate }) =
           </ToggleButtonGroup>
         </div>
 
-        {/* Brightness Slider (for devices like lights) */}
-        {device?.type === 'LIGHT' && (
+        {device?.type === "LIGHT" && (
           <Form.Group controlId="brightnessControl" className="mb-3">
             <Form.Label>Brightness</Form.Label>
             <Form.Range
@@ -51,8 +62,7 @@ const DeviceControlModal = ({ show, handleClose, device, handleDeviceUpdate }) =
           </Form.Group>
         )}
 
-        {/* Temperature Input (for devices like thermostats) */}
-        {device?.type === 'THERMOSTAT' && (
+        {device?.type === "THERMOSTAT" && (
           <Form.Group controlId="temperatureControl" className="mb-3">
             <Form.Label>Temperature</Form.Label>
             <Form.Control

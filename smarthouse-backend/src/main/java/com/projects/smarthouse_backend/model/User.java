@@ -16,7 +16,7 @@ public class User {
     private Long id;
 
     private String username;
-    private String password; // Store hashed passwords in real applications
+    private String password;
 
     @OneToMany(mappedBy = "user")
     private List<Room> rooms;
