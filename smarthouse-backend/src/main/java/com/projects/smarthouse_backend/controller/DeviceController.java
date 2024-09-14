@@ -2,7 +2,9 @@ package com.projects.smarthouse_backend.controller;
 
 import com.projects.smarthouse_backend.model.Device;
 import com.projects.smarthouse_backend.model.DeviceType;
+import com.projects.smarthouse_backend.model.Room;
 import com.projects.smarthouse_backend.service.DeviceService;
+import com.projects.smarthouse_backend.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,9 @@ public class DeviceController {
 
     @Autowired
     private DeviceService deviceService;
+
+    @Autowired
+    private RoomService roomService;
 
     @GetMapping
     public List<Device> getAllDevices() {
@@ -46,6 +51,24 @@ public class DeviceController {
             return ResponseEntity.ok(deviceService.saveDevice(device));
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/{deviceId}/assign-room/{roomId}")
+    public ResponseEntity<Device> assignDeviceToRoom(@PathVariable Long deviceId, @PathVariable Long roomId) {
+        Optional<Device> optionalDevice = deviceService.getDeviceById(deviceId);
+        Optional<Room> optionalRoom = roomService.getRoomById(roomId);
+
+        if (optionalDevice.isPresent() && optionalRoom.isPresent()) {
+            Device device = optionalDevice.get();
+            Room room = optionalRoom.get();
+            device.setRoom(room);
+            Device updatedDevice = deviceService.saveDevice(device);
+            return ResponseEntity.ok(updatedDevice);
+        } else if (optionalDevice.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PutMapping("/{deviceId}/control")

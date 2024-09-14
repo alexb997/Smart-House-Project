@@ -10,14 +10,14 @@ import {
   Col,
 } from "react-bootstrap";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import { useNavigate } from "react-router-dom"; // Import the useNavigate hook
+import { useNavigate } from "react-router-dom";
 
 const RoomList = () => {
   const [rooms, setRooms] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [currentRoom, setCurrentRoom] = useState({ name: "" }); // Default to an empty room
+  const [currentRoom, setCurrentRoom] = useState({ name: "" });
   const [isEditing, setIsEditing] = useState(false);
-  
+
   const navigate = useNavigate(); // Initialize useNavigate for navigation
 
   useEffect(() => {
@@ -27,6 +27,7 @@ const RoomList = () => {
   const fetchRooms = async () => {
     try {
       const response = await instance.get("/api/rooms");
+      console.log(response.data);
       setRooms(response.data);
     } catch (error) {
       console.error("Error fetching rooms:", error);
@@ -67,7 +68,7 @@ const RoomList = () => {
     setCurrentRoom({ name: "" });
   };
 
-  const handleRoomClick = (roomName,roomId) => {
+  const handleRoomClick = (roomName, roomId) => {
     navigate(`/${roomName}/devices`, { state: { roomId: roomId } });
   };
 
@@ -82,35 +83,44 @@ const RoomList = () => {
         Add Room
       </Button>
       <Row>
-        {rooms.map((room) => (
-          <Col md={4} key={room.id} className="mb-4">
-            <Card onClick={() => handleRoomClick(room.name,room.id)} style={{ cursor: 'pointer' }}>
-              <Card.Body>
-                <Card.Title>{room.name}</Card.Title>
-                <div className="d-flex justify-content-between">
-                  <Button
-                    variant="warning"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleShowModal(room);
-                    }}
-                  >
-                    <FaEdit /> Edit
-                  </Button>
-                  <Button
-                    variant="danger"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDelete(room.id);
-                    }}
-                  >
-                    <FaTrash /> Delete
-                  </Button>
-                </div>
-              </Card.Body>
-            </Card>
+        {rooms.length ? (
+          rooms.map((room) => (
+            <Col md={4} key={room.id} className="mb-4">
+              <Card
+                onClick={() => handleRoomClick(room.name, room.id)}
+                style={{ cursor: "pointer" }}
+              >
+                <Card.Body>
+                  <Card.Title>{room.name}</Card.Title>
+                  <div className="d-flex justify-content-between">
+                    <Button
+                      variant="warning"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleShowModal(room);
+                      }}
+                    >
+                      <FaEdit /> Edit
+                    </Button>
+                    <Button
+                      variant="danger"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(room.id);
+                      }}
+                    >
+                      <FaTrash /> Delete
+                    </Button>
+                  </div>
+                </Card.Body>
+              </Card>
+            </Col>
+          ))
+        ) : (
+          <Col>
+            <h4>No rooms available!</h4>
           </Col>
-        ))}
+        )}
       </Row>
 
       <Modal show={showModal} onHide={handleCloseModal}>

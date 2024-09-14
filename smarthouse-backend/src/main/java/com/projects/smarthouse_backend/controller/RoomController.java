@@ -29,12 +29,19 @@ public class RoomController {
     }
 
     @GetMapping("/{roomId}/devices")
-    public ResponseEntity<List<Device>> getRoomDevices(@PathVariable Long roomId) {
-        Optional<Room> room = roomService.getRoomById(roomId);
-        if (room.isPresent()) {
-            return getRoomDevices(roomId);
+    public ResponseEntity<?> getRoomDevices(@PathVariable Long roomId) {
+        try {
+            Optional<Room> room = roomService.getRoomById(roomId);
+
+            if (room.isPresent()) {
+                List<Device> devices = room.get().getDevices();
+                return ResponseEntity.ok(devices);
+            } else {
+                return ResponseEntity.status(404).body("Room with ID " + roomId + " not found.");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error retrieving devices for Room ID " + roomId + ": " + e.getMessage());
         }
-        return ResponseEntity.notFound().build();
     }
 
     @PostMapping
