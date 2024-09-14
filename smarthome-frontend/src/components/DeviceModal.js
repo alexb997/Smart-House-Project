@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Modal, Button, Form, InputGroup } from "react-bootstrap";
-import { updateDeviceSettings, controlDevice } from "../service/deviceService";
+import { Modal, Button, Form, InputGroup, Spinner, Alert } from "react-bootstrap";
+import { updateDeviceSettings } from "../service/deviceService";
+import PropTypes from "prop-types";
 
 const DeviceModal = ({ device, show, handleClose }) => {
   const [brightness, setBrightness] = useState(device.brightness || 0);
@@ -8,37 +9,45 @@ const DeviceModal = ({ device, show, handleClose }) => {
   const [motionDetectionEnabled, setMotionDetectionEnabled] = useState(
     device.motionDetectionEnabled || false
   );
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const handleBrightnessChange = async (event) => {
+  const handleUpdateDevice = async (updatedDevice) => {
+    setLoading(true);
+    setError(null);
+    try {
+      await updateDeviceSettings(device.id, updatedDevice);
+    } catch (err) {
+      console.error("Error updating device:", err);
+      setError("Failed to update device settings. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleBrightnessChange = (event) => {
     const newValue = event.target.value;
     setBrightness(newValue);
-    let tempDevice = device;
-    tempDevice.brightness = newValue;
-    await updateDeviceSettings(device.id, tempDevice);
+    handleUpdateDevice({ ...device, brightness: newValue });
   };
 
-  const handleTemperatureChange = async (event) => {
+  const handleTemperatureChange = (event) => {
     const newValue = event.target.value;
-    setTemperature(newValue);
-    let tempDevice = device;
-    tempDevice.temperature = newValue;
-    await updateDeviceSettings(device.id, tempDevice);
+    if (newValue >= 0 && newValue <= 50) {
+      setTemperature(newValue);
+      handleUpdateDevice({ ...device, temperature: newValue });
+    }
   };
 
-  const handleMotionDetectionToggle = async () => {
+  const handleMotionDetectionToggle = () => {
     const newStatus = !motionDetectionEnabled;
     setMotionDetectionEnabled(newStatus);
-    let tempDevice = device;
-    tempDevice.motionDetectionEnabled = newStatus;
-    await updateDeviceSettings(device.id, tempDevice);
+    handleUpdateDevice({ ...device, motionDetectionEnabled: newStatus });
   };
 
-  const handleToggleDevice = async () => {
+  const handleToggleDevice = () => {
     const newStatus = !device.status;
-    let tempDevice = device;
-    tempDevice.status = newStatus;
-    await updateDeviceSettings(device.id, tempDevice);
-    device.status = newStatus;
+    handleUpdateDevice({ ...device, status: newStatus });
   };
 
   return (
@@ -53,6 +62,12 @@ const DeviceModal = ({ device, show, handleClose }) => {
         <p>
           <strong>Status:</strong> {device.status ? "On" : "Off"}
         </p>
+
+        {error && (
+          <Alert variant="danger">
+            {error}
+          </Alert>
+        )}
 
         {device.type === "LIGHT" && (
           <Form.Group controlId="brightness">
@@ -102,12 +117,31 @@ const DeviceModal = ({ device, show, handleClose }) => {
         <Button
           variant={device.status ? "danger" : "primary"}
           onClick={handleToggleDevice}
+          disabled={loading}
         >
-          {device.status ? "Turn Off" : "Turn On"}
+          {loading ? (
+            <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+          ) : (
+            device.status ? "Turn Off" : "Turn On"
+          )}
         </Button>
       </Modal.Footer>
     </Modal>
   );
+};
+
+DeviceModal.propTypes = {
+  device: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+    status: PropTypes.bool.isRequired,
+    brightness: PropTypes.number,
+    temperature: PropTypes.number,
+    motionDetectionEnabled: PropTypes.bool,
+  }).isRequired,
+  show: PropTypes.bool.isRequired,
+  handleClose: PropTypes.func.isRequired,
 };
 
 export default DeviceModal;

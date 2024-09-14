@@ -1,27 +1,71 @@
-import React from "react";
-import {
-  Modal,
-  Button,
-  Form,
-  ToggleButtonGroup,
-  ToggleButton,
-} from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import { Modal, Button, Form, ToggleButtonGroup, ToggleButton } from "react-bootstrap";
 
-const DeviceControlModal = ({
-  show,
-  handleClose,
-  device,
-  handleDeviceUpdate,
-}) => {
-  const [status, setStatus] = React.useState(device?.status || "OFF");
-  const [brightness, setBrightness] = React.useState(device?.brightness || 50);
-  const [temperature, setTemperature] = React.useState(
-    device?.temperature || 72
-  );
+const DeviceControlModal = ({ show, handleClose, device, handleDeviceUpdate }) => {
+  const [formState, setFormState] = useState({
+    status: device?.status || "OFF",
+    brightness: device?.brightness || 50,
+    temperature: device?.temperature || 72,
+  });
 
-  const handleSaveChanges = () => {
-    handleDeviceUpdate({ ...device, status, brightness, temperature });
-    handleClose();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (!show) {
+      setFormState({
+        status: device?.status || "OFF",
+        brightness: device?.brightness || 50,
+        temperature: device?.temperature || 72,
+      });
+      setError(null);
+    }
+  }, [show, device]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormState((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const handleStatusChange = (val) => {
+    setFormState((prevState) => ({
+      ...prevState,
+      status: val,
+    }));
+  };
+
+  const handleSaveChanges = async () => {
+    const { status, brightness, temperature } = formState;
+
+    if (!status) {
+      setError("Device status is required.");
+      return;
+    }
+
+    if (device?.type === "LIGHT" && (brightness < 0 || brightness > 100)) {
+      setError("Brightness must be between 0 and 100.");
+      return;
+    }
+
+    if (device?.type === "THERMOSTAT" && (temperature < 60 || temperature > 90)) {
+      setError("Temperature must be between 60 and 90.");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      await handleDeviceUpdate({ ...device, ...formState });
+      handleClose();
+    } catch (error) {
+      setError("Failed to update device. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -30,16 +74,16 @@ const DeviceControlModal = ({
         <Modal.Title>{device?.name}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {/* Device Status Display */}
-        <p>Current Status: {status}</p>
+        {error && <div className="text-danger mb-3">{error}</div>}
 
-        {/* Device Controls */}
+        <p>Current Status: {formState.status}</p>
+
         <div className="mb-3">
           <ToggleButtonGroup
             type="radio"
             name="status"
-            value={status}
-            onChange={(val) => setStatus(val)}
+            value={formState.status}
+            onChange={handleStatusChange}
           >
             <ToggleButton id="tbg-btn-1" value="ON">
               On
@@ -54,8 +98,9 @@ const DeviceControlModal = ({
           <Form.Group controlId="brightnessControl" className="mb-3">
             <Form.Label>Brightness</Form.Label>
             <Form.Range
-              value={brightness}
-              onChange={(e) => setBrightness(e.target.value)}
+              name="brightness"
+              value={formState.brightness}
+              onChange={handleChange}
               min="0"
               max="100"
             />
@@ -66,9 +111,10 @@ const DeviceControlModal = ({
           <Form.Group controlId="temperatureControl" className="mb-3">
             <Form.Label>Temperature</Form.Label>
             <Form.Control
+              name="temperature"
               type="number"
-              value={temperature}
-              onChange={(e) => setTemperature(e.target.value)}
+              value={formState.temperature}
+              onChange={handleChange}
               min="60"
               max="90"
             />
@@ -79,8 +125,8 @@ const DeviceControlModal = ({
         <Button variant="secondary" onClick={handleClose}>
           Close
         </Button>
-        <Button variant="primary" onClick={handleSaveChanges}>
-          Save Changes
+        <Button variant="primary" onClick={handleSaveChanges} disabled={loading}>
+          {loading ? "Saving..." : "Save Changes"}
         </Button>
       </Modal.Footer>
     </Modal>

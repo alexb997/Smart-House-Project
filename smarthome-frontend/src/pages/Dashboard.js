@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import DeviceCard from "../components/DeviceCard";
 import DeviceModal from "../components/DeviceModal";
 import { getDevices } from "../service/deviceService";
-import { Container, Row, Col, Modal, Button } from "react-bootstrap";
+import { Container, Row, Col, Button, Alert } from "react-bootstrap";
 import CreateDeviceModal from "../components/CreateDeviceModal";
 
 const Dashboard = () => {
@@ -10,6 +10,8 @@ const Dashboard = () => {
   const [selectedDevice, setSelectedDevice] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchDevices = async () => {
@@ -18,6 +20,9 @@ const Dashboard = () => {
         setDevices(response.data);
       } catch (error) {
         console.error("Error fetching devices:", error);
+        setError("Failed to load devices. Please try again.");
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -31,6 +36,7 @@ const Dashboard = () => {
 
   const handleCloseModal = () => {
     setModalOpen(false);
+    setSelectedDevice(null);
   };
 
   const handleOpenCreateModal = () => {
@@ -46,24 +52,46 @@ const Dashboard = () => {
       <Button onClick={handleOpenCreateModal} className="mb-4">
         Create New Device
       </Button>
-      <Row key={devices.length}>
-        {devices.map((device) => (
-          <Col xs={12} sm={6} md={4} key={device.deviceId} className="mb-3">
-            <DeviceCard
-              device={device}
-              onClick={() => handleOpenModal(device)}
-            />
-          </Col>
-        ))}
-      </Row>
+
+      {loading && (
+        <div className="text-center my-4">
+          <span className="sr-only">Loading...</span>
+        </div>
+      )}
+
+      {error && (
+        <Alert variant="danger" className="my-4">
+          {error}
+        </Alert>
+      )}
+
+      {!loading && !error && devices.length > 0 && (
+        <Row>
+          {devices.map((device) => (
+            <Col xs={12} sm={6} md={4} key={device.deviceId} className="mb-3">
+              <DeviceCard
+                device={device}
+                onClick={() => handleOpenModal(device)}
+              />
+            </Col>
+          ))}
+        </Row>
+      )}
+
+      {!loading && !error && devices.length === 0 && (
+        <div className="text-center my-4">
+          <p>No devices available. Please create one.</p>
+        </div>
+      )}
+
       {selectedDevice && (
         <DeviceModal
           device={selectedDevice}
           show={modalOpen}
           onClose={handleCloseModal}
-          onHide={handleCloseModal}
         />
       )}
+
       {createModalOpen && (
         <CreateDeviceModal
           show={createModalOpen}
