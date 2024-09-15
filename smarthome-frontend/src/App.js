@@ -8,6 +8,8 @@ import RoomList from "./components/RoomsList";
 import Footer from "./components/Footer";
 import RoomDeviceDashboard from "./pages/RoomDeviceDashboard";
 import UserForm from "./pages/UserForm";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 
 const App = () => {
   return (
@@ -20,6 +22,8 @@ const App = () => {
           <Route path="/settings" element={<SystemSettings />} />
           <Route path="/:roomName/devices" element={<RoomDeviceDashboard />} />
           <Route path="/create-user" element={<UserForm />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </Container>
       <Footer />

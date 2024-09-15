@@ -34,8 +34,10 @@ const DeviceModal = ({ device, show, handleClose }) => {
 
   const handleBrightnessChange = (event) => {
     const newValue = event.target.value;
-    setBrightness(newValue);
-    handleUpdateDevice({ ...device, brightness: newValue });
+    if (newValue >= 0) {
+      setBrightness(newValue);
+      handleUpdateDevice({ ...device, brightness: newValue });
+    }
   };
 
   const handleTemperatureChange = (event) => {
@@ -55,6 +57,7 @@ const DeviceModal = ({ device, show, handleClose }) => {
   const handleToggleDevice = () => {
     const newStatus = !device.status;
     handleUpdateDevice({ ...device, status: newStatus });
+    handleClose()
   };
 
   return (
