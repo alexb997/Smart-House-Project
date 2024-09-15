@@ -8,6 +8,7 @@ const RoomDeviceDashboard = () => {
   const { roomName } = useParams();
   const location = useLocation();
   const roomId = location.state?.roomId;
+  const [modalOpen, setModalOpen] = useState(false);
   const [devices, setDevices] = useState([]);
   const [selectedDevice, setSelectedDevice] = useState(null);
 
@@ -23,11 +24,13 @@ const RoomDeviceDashboard = () => {
     fetchDevices();
   }, [roomName, roomId]);
 
-  const handleDeviceSelect = (device) => {
+  const handleOpenModal = (device) => {
     setSelectedDevice(device);
+    setModalOpen(!modalOpen);
   };
 
-  const handleModalClose = () => {
+  const handleCloseModal = () => {
+    setModalOpen(!modalOpen);
     setSelectedDevice(null);
   };
 
@@ -38,8 +41,11 @@ const RoomDeviceDashboard = () => {
         {devices.map((device) => (
           <DeviceCard
             key={device.id}
+            
             device={device}
-            onSelect={() => handleDeviceSelect(device)}
+            onClick={() => {
+              handleOpenModal(device);
+            }}
           />
         ))}
       </div>
@@ -47,8 +53,8 @@ const RoomDeviceDashboard = () => {
       {selectedDevice && (
         <DeviceModal
           device={selectedDevice}
-          show={!!selectedDevice}
-          handleClose={handleModalClose}
+          show={modalOpen}
+          handleClose={handleCloseModal}
         />
       )}
     </div>
