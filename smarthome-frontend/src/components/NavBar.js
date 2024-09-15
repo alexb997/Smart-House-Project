@@ -1,8 +1,25 @@
-import React from "react";
-import { Navbar, Nav, Container } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Navbar, Nav, Container, Button } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 const NavbarComponent = () => {
+  const [username, setUsername] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const storedUsername = localStorage.getItem("username");
+    if (storedUsername) {
+      setUsername(storedUsername);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("username");
+    setUsername(null);
+    navigate("/login");
+  };
+
   return (
     <Navbar bg="light" expand="lg">
       <Container>
@@ -24,6 +41,17 @@ const NavbarComponent = () => {
             <Nav.Link as={Link} to="/rooms">
               Rooms
             </Nav.Link>
+          </Nav>
+          <Nav className="ms-auto">
+            {username ? (
+              <Button variant="outline-danger" onClick={handleLogout}>
+                Logout
+              </Button>
+            ) : (
+              <Button variant="outline-primary" as={Link} to="/login">
+                Login
+              </Button>
+            )}
           </Nav>
         </Navbar.Collapse>
       </Container>

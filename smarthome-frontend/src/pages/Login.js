@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { loginUser } from "../service/userService";
+import { getUsers, loginUser } from "../service/userService";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -21,7 +21,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await loginUser(formData);
-
+      console.log(response.data);
       localStorage.setItem("username", response.data.username);
 
       setSuccess("Login successful");
