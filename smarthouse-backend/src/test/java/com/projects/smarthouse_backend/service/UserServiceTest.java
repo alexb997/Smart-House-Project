@@ -66,4 +66,25 @@ class UserServiceTest {
         userService.deleteUser(1L);
         verify(userRepository, times(1)).deleteById(1L);
     }
+
+    @Test
+    void testFindByUsername() {
+        User user = new User();
+        user.setUsername("testUser");
+        when(userRepository.findByUsername("testUser")).thenReturn(Optional.of(user));
+
+        Optional<User> foundUser = userService.findByUsername("testUser");
+        assertTrue(foundUser.isPresent());
+        assertEquals("testUser", foundUser.get().getUsername());
+        verify(userRepository, times(1)).findByUsername("testUser");
+    }
+
+    @Test
+    void testFindByUsername_NotFound() {
+        when(userRepository.findByUsername("nonExistentUser")).thenReturn(Optional.empty());
+
+        Optional<User> foundUser = userService.findByUsername("nonExistentUser");
+        assertFalse(foundUser.isPresent());
+        verify(userRepository, times(1)).findByUsername("nonExistentUser");
+    }
 }

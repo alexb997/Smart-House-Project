@@ -85,4 +85,38 @@ class UserControllerTest {
         mockMvc.perform(delete("/api/users/1"))
                 .andExpect(status().isNoContent());
     }
+
+    @Test
+    void loginTest_Success() throws Exception {
+        when(userService.findByUsername("testUser")).thenReturn(Optional.of(user));
+
+        mockMvc.perform(post("/api/users/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"username\": \"testUser\", \"password\": \"password123\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("Login successful"))
+                .andExpect(jsonPath("$.username").value("testUser"));
+    }
+
+    @Test
+    void loginTest_InvalidPassword() throws Exception {
+        when(userService.findByUsername("testUser")).thenReturn(Optional.of(user));
+
+        mockMvc.perform(post("/api/users/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"username\": \"testUser\", \"password\": \"wrongpassword\"}"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().string("Invalid username or password"));
+    }
+
+    @Test
+    void loginTest_UserNotFound() throws Exception {
+        when(userService.findByUsername("nonexistentUser")).thenReturn(Optional.empty());
+
+        mockMvc.perform(post("/api/users/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"username\": \"nonexistentUser\", \"password\": \"password123\"}"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().string("Invalid username or password"));
+    }
 }
