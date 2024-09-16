@@ -8,6 +8,7 @@ const CreateDeviceModal = ({ show, handleClose }) => {
     const [status, setStatus] = useState(false);
     const [brightness, setBrightness] = useState(0);
     const [temperature, setTemperature] = useState(0);
+    const [error, setError] = useState(null);
     
     const handleSubmit = async () => {
         const newDevice = {
@@ -22,12 +23,14 @@ const CreateDeviceModal = ({ show, handleClose }) => {
             await createDevice(newDevice);
             handleClose();
         } catch (error) {
+            setError('Failed to create device');
             console.error('Error creating device:', error);
         }
     };
 
     return (
         <Modal show={show} onHide={handleClose}>
+            {error && <div className="error-message">{error}</div>}
             <Modal.Header closeButton>
                 <Modal.Title>Create New Device</Modal.Title>
             </Modal.Header>
@@ -100,6 +103,7 @@ const CreateDeviceModal = ({ show, handleClose }) => {
                 </Button>
             </Modal.Footer>
         </Modal>
+        
     );
 };
 
