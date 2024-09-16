@@ -15,10 +15,13 @@ import { useNavigate } from "react-router-dom";
 const RoomList = () => {
   const [rooms, setRooms] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [currentRoom, setCurrentRoom] = useState({ name: "" });
+  const [currentRoom, setCurrentRoom] = useState({
+    name: "",
+    user: localStorage.getItem(userId),
+  });
   const [isEditing, setIsEditing] = useState(false);
 
-  const navigate = useNavigate(); // Initialize useNavigate for navigation
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchRooms();
