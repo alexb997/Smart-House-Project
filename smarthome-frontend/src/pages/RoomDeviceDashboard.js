@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from "react";
 import DeviceCard from "../components/DeviceCard";
 import DeviceModal from "../components/DeviceModal";
+import CreateDeviceModal from "../components/CreateDeviceModal"; // Import the modal for creating a device
 import { useParams, useLocation } from "react-router-dom";
 import { getRoomDevices } from "../service/roomService";
+import { Button, Container, Row, Col } from "react-bootstrap";
 
 const RoomDeviceDashboard = () => {
   const { roomName } = useParams();
   const location = useLocation();
   const roomId = location.state?.roomId;
+  const userId = localStorage.getItem("userId");
   const [modalOpen, setModalOpen] = useState(false);
   const [devices, setDevices] = useState([]);
   const [selectedDevice, setSelectedDevice] = useState(null);
+  const [createModalOpen, setCreateModalOpen] = useState(false); // State for the Create Device modal
 
   useEffect(() => {
     const fetchDevices = async () => {
@@ -34,21 +38,30 @@ const RoomDeviceDashboard = () => {
     setSelectedDevice(null);
   };
 
+  const toggleCreateModal = () => {
+    setCreateModalOpen(!createModalOpen);
+  };
+
   return (
-    <div className="device-dashboard">
+    <Container>
       <h2>Devices in {roomName}</h2>
-      <div className="device-grid">
+
+      <Button onClick={toggleCreateModal} className="mb-4">
+        Create New Device
+      </Button>
+
+      <Row>
         {devices.map((device) => (
-          <DeviceCard
-            key={device.id}
-            
-            device={device}
-            onClick={() => {
-              handleOpenModal(device);
-            }}
-          />
+          <Col xs={12} sm={6} md={4} className="mb-3" key={device.id}>
+            <DeviceCard
+              device={device}
+              onClick={() => {
+                handleOpenModal(device);
+              }}
+            />
+          </Col>
         ))}
-      </div>
+      </Row>
 
       {selectedDevice && (
         <DeviceModal
@@ -57,7 +70,16 @@ const RoomDeviceDashboard = () => {
           handleClose={handleCloseModal}
         />
       )}
-    </div>
+
+      {createModalOpen && (
+        <CreateDeviceModal
+          show={createModalOpen}
+          handleClose={toggleCreateModal}
+          roomId={roomId}
+          userId={userId}
+        />
+      )}
+    </Container>
   );
 };
 

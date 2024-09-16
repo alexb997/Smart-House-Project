@@ -62,6 +62,7 @@ public class UserController {
             Map<String, String> response = new HashMap<>();
             response.put("message", "Login successful");
             response.put("username", user.get().getUsername());
+            response.put("id", String.valueOf(user.get().getId()));
 
             return ResponseEntity.ok(response);
         } else {

@@ -1,5 +1,5 @@
-import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import React, { useEffect } from "react";
+import { BrowserRouter as Router, Route, Routes, useNavigate } from "react-router-dom";
 import Navbar from "./components/NavBar";
 import { Container } from "react-bootstrap";
 import DeviceLogs from "./components/DeviceLogs";
@@ -12,8 +12,18 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 
 const App = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const username = localStorage.getItem("username");
+    
+    if (!username) {
+      navigate("/login");
+    }
+  }, [navigate]);
+
   return (
-    <Router>
+    <>
       <Navbar />
       <Container>
         <Routes>
@@ -27,8 +37,14 @@ const App = () => {
         </Routes>
       </Container>
       <Footer />
-    </Router>
+    </>
   );
 };
 
-export default App;
+const AppWrapper = () => (
+  <Router>
+    <App />
+  </Router>
+);
+
+export default AppWrapper;

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
-import { createDevice } from '../service/deviceService'; // Add service to create device
+import { createDevice } from '../service/deviceService';
 
-const CreateDeviceModal = ({ show, handleClose }) => {
+const CreateDeviceModal = ({ show, handleClose, roomId, userId }) => {
     const [name, setName] = useState('');
     const [type, setType] = useState('LIGHT');
     const [status, setStatus] = useState(false);
@@ -17,6 +17,8 @@ const CreateDeviceModal = ({ show, handleClose }) => {
             status,
             brightness: type === 'LIGHT' ? brightness : null,
             temperature: type === 'THERMOSTAT' ? temperature : null,
+            roomId,
+            userId
         };
 
         try {
@@ -103,7 +105,6 @@ const CreateDeviceModal = ({ show, handleClose }) => {
                 </Button>
             </Modal.Footer>
         </Modal>
-        
     );
 };
 

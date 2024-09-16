@@ -23,7 +23,7 @@ const Login = () => {
       const response = await loginUser(formData);
       console.log(response.data);
       localStorage.setItem("username", response.data.username);
-
+      localStorage.setItem("userId", response.data.id);
       setSuccess("Login successful");
       setError("");
     } catch (error) {
