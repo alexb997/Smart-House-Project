@@ -1,5 +1,6 @@
 package com.projects.smarthouse_backend.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.projects.smarthouse_backend.model.Device;
 import com.projects.smarthouse_backend.model.Room;
 import com.projects.smarthouse_backend.service.RoomService;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -28,6 +30,16 @@ public class RoomController {
         return room.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Room>> getRoomsByUserId(@PathVariable Long userId) {
+        try {
+            List<Room> rooms = roomService.getRoomsByUserId(userId);
+            return ResponseEntity.ok(rooms);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body(null); // Return 404 if user not found
+        }
+    }
+
     @GetMapping("/{roomId}/devices")
     public ResponseEntity<?> getRoomDevices(@PathVariable Long roomId) {
         try {
@@ -45,8 +57,13 @@ public class RoomController {
     }
 
     @PostMapping
-    public Room createRoom(@RequestBody Room room) {
-        return roomService.saveRoom(room);
+    public Room createRoom(@RequestBody Map<String, Object> requestData) {
+        String name = requestData.get("name").toString();
+        Long userId = Long.valueOf(requestData.get("userId").toString());
+        Room room = new Room();
+        room.setName(name);
+
+        return roomService.saveRoom(room, userId);
     }
 
     @PutMapping("/{roomId}")

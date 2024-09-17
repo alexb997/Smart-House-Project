@@ -1,5 +1,6 @@
 package com.projects.smarthouse_backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -20,8 +21,10 @@ public class User {
     private String password;
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private List<Room> rooms;
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private List<Device> devices;
 }

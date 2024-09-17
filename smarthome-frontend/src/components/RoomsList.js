@@ -14,25 +14,21 @@ import { useNavigate } from "react-router-dom";
 
 const RoomList = () => {
   const [rooms, setRooms] = useState([]);
-  const [userId, setUserId] = useState(1);
   const [showModal, setShowModal] = useState(false);
-  const [currentRoom, setCurrentRoom] = useState({
-    name: "",
-    user: localStorage.getItem(userId),
-  });
+  const [currentRoom, setCurrentRoom] = useState({ name: "" });
   const [isEditing, setIsEditing] = useState(false);
+  const [userId, setUserId] = useState(1);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    setUserId(localStorage.getItem(userId));
+    setUserId(localStorage.getItem("userId"));
     fetchRooms();
   }, [userId]);
 
-  const fetchRooms = async () => {
+  const fetchRooms = async (userId) => {
     try {
-      const response = await instance.get("/api/rooms");
-      console.log(response.data);
+      const response = await instance.get(`/api/rooms/user/${userId}`);
       setRooms(response.data);
     } catch (error) {
       console.error("Error fetching rooms:", error);
@@ -56,11 +52,17 @@ const RoomList = () => {
 
   const handleSave = async () => {
     try {
+      const roomData = {
+        name: currentRoom.name,
+        userId: userId,
+      };
+
       if (isEditing) {
-        await instance.put(`/api/rooms/${currentRoom.id}`, currentRoom);
+        await instance.put(`/api/rooms/${currentRoom.id}`, roomData);
       } else {
-        await instance.post("/api/rooms", currentRoom);
+        await instance.post("/api/rooms", roomData);
       }
+
       fetchRooms();
       setShowModal(false);
     } catch (error) {
@@ -68,18 +70,18 @@ const RoomList = () => {
     }
   };
 
-  const handleCloseModal = () => {
+  const handleRoomClick = (roomName, roomId) => {
+    navigate(`/${roomName}/devices`, { state: { roomId } });
+  };
+
+  const closeModal = () => {
     setShowModal(false);
     setCurrentRoom({ name: "" });
   };
 
-  const handleRoomClick = (roomName, roomId) => {
-    navigate(`/${roomName}/devices`, { state: { roomId: roomId } });
-  };
-
   return (
     <Container className="mt-4">
-      <h2 className="mb-4 text-center">Rooms</h2>
+      <h2 className="text-center mb-4">Rooms</h2>
       <Button
         variant="primary"
         className="mb-3"
@@ -88,7 +90,7 @@ const RoomList = () => {
         Add Room
       </Button>
       <Row>
-        {rooms.length ? (
+        {rooms.length > 0 ? (
           rooms.map((room) => (
             <Col md={4} key={room.id} className="mb-4">
               <Card
@@ -128,7 +130,8 @@ const RoomList = () => {
         )}
       </Row>
 
-      <Modal show={showModal} onHide={handleCloseModal}>
+      {/* Room Modal */}
+      <Modal show={showModal} onHide={closeModal}>
         <Modal.Header closeButton>
           <Modal.Title>{isEditing ? "Edit Room" : "Add Room"}</Modal.Title>
         </Modal.Header>
@@ -148,7 +151,7 @@ const RoomList = () => {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>
+          <Button variant="secondary" onClick={closeModal}>
             Close
           </Button>
           <Button variant="primary" onClick={handleSave}>

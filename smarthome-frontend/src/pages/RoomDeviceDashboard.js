@@ -44,7 +44,9 @@ const RoomDeviceDashboard = () => {
 
   return (
     <Container>
-      <h2>Devices in {roomName}</h2>
+      <h2>
+        Devices in {roomName}
+      </h2>
 
       <Button onClick={toggleCreateModal} className="mb-4">
         Create New Device
