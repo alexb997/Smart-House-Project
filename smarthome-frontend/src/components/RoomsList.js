@@ -17,13 +17,12 @@ const RoomList = () => {
   const [showModal, setShowModal] = useState(false);
   const [currentRoom, setCurrentRoom] = useState({ name: "" });
   const [isEditing, setIsEditing] = useState(false);
-  const [userId, setUserId] = useState(1);
+  const [userId, setUserId] = useState(localStorage.getItem("userId"));
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    setUserId(localStorage.getItem("userId"));
-    fetchRooms();
+    fetchRooms(userId);
   }, [userId]);
 
   const fetchRooms = async (userId) => {
@@ -38,7 +37,7 @@ const RoomList = () => {
   const handleDelete = async (id) => {
     try {
       await instance.delete(`/api/rooms/${id}`);
-      fetchRooms();
+      fetchRooms(userId);
     } catch (error) {
       console.error("Error deleting room:", error);
     }

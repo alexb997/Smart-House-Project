@@ -36,7 +36,7 @@ public class RoomController {
             List<Room> rooms = roomService.getRoomsByUserId(userId);
             return ResponseEntity.ok(rooms);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(404).body(null); // Return 404 if user not found
+            return ResponseEntity.status(404).body(null);
         }
     }
 
