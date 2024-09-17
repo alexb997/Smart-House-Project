@@ -28,12 +28,15 @@ const CreateDeviceModal = ({ show, handleClose, roomId, userId }) => {
       status,
       brightness: type === "LIGHT" ? brightness : null,
       temperature: type === "THERMOSTAT" ? temperature : null,
-      roomId,
-      userId,
+    };
+    const createdDevice = {
+      device: newDevice,
+      roomId: roomId,
+      userId: userId,
     };
 
     try {
-      await createDevice(newDevice);
+      await createDevice(createdDevice);
       handleClose();
     } catch (err) {
       setError("Failed to create device.");

@@ -10,7 +10,7 @@ const RoomDeviceDashboard = () => {
   const { roomName } = useParams();
   const location = useLocation();
   const roomId = location.state?.roomId;
-  const userId = localStorage.getItem("userId");
+  const userId = Number(localStorage.getItem("userId"));
   const [modalOpen, setModalOpen] = useState(false);
   const [devices, setDevices] = useState([]);
   const [selectedDevice, setSelectedDevice] = useState(null);
@@ -44,9 +44,7 @@ const RoomDeviceDashboard = () => {
 
   return (
     <Container>
-      <h2>
-        Devices in {roomName}
-      </h2>
+      <h2>Devices in {roomName}</h2>
 
       <Button onClick={toggleCreateModal} className="mb-4">
         Create New Device

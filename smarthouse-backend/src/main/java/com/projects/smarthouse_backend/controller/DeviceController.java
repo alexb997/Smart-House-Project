@@ -3,8 +3,10 @@ package com.projects.smarthouse_backend.controller;
 import com.projects.smarthouse_backend.model.Device;
 import com.projects.smarthouse_backend.model.DeviceType;
 import com.projects.smarthouse_backend.model.Room;
+import com.projects.smarthouse_backend.model.User;
 import com.projects.smarthouse_backend.service.DeviceService;
 import com.projects.smarthouse_backend.service.RoomService;
+import com.projects.smarthouse_backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +25,10 @@ public class DeviceController {
     @Autowired
     private RoomService roomService;
 
+
+    @Autowired
+    private UserService userService;
+
     @GetMapping
     public List<Device> getAllDevices() {
         return deviceService.getAllDevices();
@@ -40,15 +46,50 @@ public class DeviceController {
     }
 
     @PostMapping
-    public Device createDevice(@RequestBody Device device) {
-        return deviceService.saveDevice(device);
+    public ResponseEntity<Device> createDevice(@RequestBody Map<String, Object> requestData) {
+        Map<String, Object> deviceData = (Map<String, Object>) requestData.get("device");
+
+        String name = deviceData.get("name").toString();
+        String typeString = deviceData.get("type").toString();
+        boolean status = Boolean.parseBoolean(deviceData.get("status").toString());
+        Integer brightness = deviceData.get("brightness") != null ? Integer.valueOf(deviceData.get("brightness").toString()) : null;
+        Integer temperature = deviceData.get("temperature") != null ? Integer.valueOf(deviceData.get("temperature").toString()) : null;
+
+        Long roomId = Long.valueOf(requestData.get("roomId").toString());
+        Long userId = Long.valueOf(requestData.get("userId").toString());
+
+        if (name == null || typeString == null) {
+            throw new IllegalArgumentException("Missing required fields");
+        }
+
+        DeviceType type = DeviceType.valueOf(typeString);
+
+        Device device = new Device();
+        device.setName(name);
+        device.setType(type);
+        device.setStatus(status);
+        device.setBrightness(brightness);
+        device.setTemperature(temperature);
+
+        Room room = roomService.getRoomById(roomId)
+                .orElseThrow(() ->  new RuntimeException("Room not found " + roomId));
+
+        User user = userService.getUserById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found " + userId));
+
+        device.setRoom(room);
+        device.setUser(user);
+
+        Device savedDevice = deviceService.saveDevice(device);
+
+        return ResponseEntity.ok(savedDevice);
     }
 
     @PutMapping("/{deviceId}")
     public ResponseEntity<Device> updateDevice(@PathVariable Long deviceId, @RequestBody Device device) {
         if (deviceService.getDeviceById(deviceId).isPresent()) {
             device.setId(deviceId);
-            return ResponseEntity.ok(deviceService.saveDevice(device));
+            return ResponseEntity.ok(deviceService.updateDevice(device));
         }
         return ResponseEntity.notFound().build();
     }
@@ -62,7 +103,7 @@ public class DeviceController {
             Device device = optionalDevice.get();
             Room room = optionalRoom.get();
             device.setRoom(room);
-            Device updatedDevice = deviceService.saveDevice(device);
+            Device updatedDevice = deviceService.updateDevice(device);
             return ResponseEntity.ok(updatedDevice);
         } else if (optionalDevice.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -81,7 +122,7 @@ public class DeviceController {
 
             if (turnOn != null) {
                 device.setStatus(turnOn);
-                Device updatedDevice = deviceService.saveDevice(device);
+                Device updatedDevice = deviceService.updateDevice(device);
                 return ResponseEntity.ok(updatedDevice);
             } else {
                 return ResponseEntity.badRequest().build();

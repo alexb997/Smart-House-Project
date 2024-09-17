@@ -32,6 +32,11 @@ public class DeviceService {
     }
 
     public Device saveDevice(Device device) {
+
+        return deviceRepository.save(device);
+    }
+
+    public Device updateDevice(Device device) {
         return deviceRepository.save(device);
     }
 

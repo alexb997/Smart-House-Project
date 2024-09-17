@@ -17,7 +17,7 @@ const RoomList = () => {
   const [showModal, setShowModal] = useState(false);
   const [currentRoom, setCurrentRoom] = useState({ name: "" });
   const [isEditing, setIsEditing] = useState(false);
-  const [userId, setUserId] = useState(localStorage.getItem("userId"));
+  const userId = localStorage.getItem("userId");
 
   const navigate = useNavigate();
 
@@ -49,7 +49,7 @@ const RoomList = () => {
     setShowModal(true);
   };
 
-  const handleSave = async () => {
+  const handleSave = async (userId) => {
     try {
       const roomData = {
         name: currentRoom.name,
@@ -59,7 +59,7 @@ const RoomList = () => {
       if (isEditing) {
         await instance.put(`/api/rooms/${currentRoom.id}`, roomData);
       } else {
-        await instance.post("/api/rooms", roomData);
+        await instance.post("/api/rooms", currentRoom);
       }
 
       fetchRooms();
