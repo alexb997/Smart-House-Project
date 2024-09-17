@@ -8,40 +8,27 @@ const DeviceCard = ({ device, onClick }) => {
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
     borderRadius: "8px",
     marginBottom: "20px",
-    overflow: "hidden",
-    transition: "transform 0.2s ease-in-out",
-    cursor: "pointer",
-  };
-
-  const handleMouseEnter = (e) => {
-    e.currentTarget.style.transform = "scale(1.05)";
-  };
-
-  const handleMouseLeave = (e) => {
-    e.currentTarget.style.transform = "scale(1)";
-  };
-
-  const handleClick = () => {
-    if (onClick) onClick();
+    transition: "transform 0.2s",
+    cursor: onClick ? "pointer" : "default",
   };
 
   return (
     <Card
       style={cardStyle}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onClick={handleClick}
-      key={device.id + 2}
+      onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
+      onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+      onClick={onClick}
       className="device-card"
     >
       <Card.Body>
-        <Card.Title>{device.name || "Unnamed Device"}</Card.Title>{" "}
+        <Card.Title>{device.name || "Unnamed Device"}</Card.Title>
         <Card.Subtitle className="mb-2 text-muted">
           Type: {device.type}
         </Card.Subtitle>
         <Card.Subtitle className="mb-2 text-muted">
           Status: {device.status ? "On" : "Off"}
         </Card.Subtitle>
+
         {device.brightness !== null && (
           <Card.Text>Brightness: {device.brightness}%</Card.Text>
         )}
@@ -50,11 +37,11 @@ const DeviceCard = ({ device, onClick }) => {
         )}
         {device.motionDetectionEnabled !== null && (
           <Card.Text>
-            Motion Detection:{" "}
-            {device.motionDetectionEnabled ? "Enabled" : "Disabled"}
+            Motion Detection: {device.motionDetectionEnabled ? "Enabled" : "Disabled"}
           </Card.Text>
         )}
-        <Button variant="primary" onClick={handleClick} disabled={!onClick}>
+
+        <Button variant="primary" onClick={onClick} disabled={!onClick}>
           Manage
         </Button>
       </Card.Body>

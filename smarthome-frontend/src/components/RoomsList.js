@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 
 const RoomList = () => {
   const [rooms, setRooms] = useState([]);
+  const [userId, setUserId] = useState(1);
   const [showModal, setShowModal] = useState(false);
   const [currentRoom, setCurrentRoom] = useState({
     name: "",
@@ -24,8 +25,9 @@ const RoomList = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    setUserId(localStorage.getItem(userId));
     fetchRooms();
-  }, []);
+  }, [userId]);
 
   const fetchRooms = async () => {
     try {

@@ -11,54 +11,36 @@ import { updateDeviceSettings } from "../service/deviceService";
 import PropTypes from "prop-types";
 
 const DeviceModal = ({ device, show, handleClose }) => {
-  const [brightness, setBrightness] = useState(device.brightness || 0);
-  const [temperature, setTemperature] = useState(device.temperature || 0);
-  const [motionDetectionEnabled, setMotionDetectionEnabled] = useState(
-    device.motionDetectionEnabled || false
-  );
+  const [settings, setSettings] = useState({
+    brightness: device.brightness || 0,
+    temperature: device.temperature || 0,
+    motionDetectionEnabled: device.motionDetectionEnabled || false,
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const handleUpdateDevice = async (updatedDevice) => {
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setSettings((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  const handleUpdateDevice = async (newSettings) => {
     setLoading(true);
     setError(null);
     try {
-      await updateDeviceSettings(device.id, updatedDevice);
+      await updateDeviceSettings(device.id, newSettings);
     } catch (err) {
-      console.error("Error updating device:", err);
       setError("Failed to update device settings. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleBrightnessChange = (event) => {
-    const newValue = event.target.value;
-    if (newValue >= 0) {
-      setBrightness(newValue);
-      handleUpdateDevice({ ...device, brightness: newValue });
-    }
-  };
-
-  const handleTemperatureChange = (event) => {
-    const newValue = event.target.value;
-    if (newValue >= 0 && newValue <= 50) {
-      setTemperature(newValue);
-      handleUpdateDevice({ ...device, temperature: newValue });
-    }
-  };
-
-  const handleMotionDetectionToggle = () => {
-    const newStatus = !motionDetectionEnabled;
-    setMotionDetectionEnabled(newStatus);
-    handleUpdateDevice({ ...device, motionDetectionEnabled: newStatus });
-  };
-
-  const handleToggleDevice = () => {
-    const newStatus = !device.status;
-    handleUpdateDevice({ ...device, status: newStatus });
-    handleClose()
-  };
+  const handleToggleDevice = () =>
+    handleUpdateDevice({ status: !device.status });
 
   return (
     <Modal show={show} onHide={handleClose} centered>
@@ -66,6 +48,7 @@ const DeviceModal = ({ device, show, handleClose }) => {
         <Modal.Title>Manage {device.name}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
+        {error && <Alert variant="danger">{error}</Alert>}
         <p>
           <strong>Device Type:</strong> {device.type}
         </p>
@@ -73,18 +56,17 @@ const DeviceModal = ({ device, show, handleClose }) => {
           <strong>Status:</strong> {device.status ? "On" : "Off"}
         </p>
 
-        {error && <Alert variant="danger">{error}</Alert>}
-
         {device.type === "LIGHT" && (
           <Form.Group controlId="brightness">
-            <Form.Label>Brightness: {brightness}%</Form.Label>
+            <Form.Label>Brightness: {settings.brightness}%</Form.Label>
             <InputGroup>
               <Form.Control
                 type="range"
+                name="brightness"
                 min="0"
                 max="100"
-                value={brightness}
-                onChange={handleBrightnessChange}
+                value={settings.brightness}
+                onChange={handleInputChange}
               />
             </InputGroup>
           </Form.Group>
@@ -92,11 +74,12 @@ const DeviceModal = ({ device, show, handleClose }) => {
 
         {device.type === "THERMOSTAT" && (
           <Form.Group controlId="temperature">
-            <Form.Label>Temperature: {temperature}°C</Form.Label>
+            <Form.Label>Temperature: {settings.temperature}°C</Form.Label>
             <Form.Control
               type="number"
-              value={temperature}
-              onChange={handleTemperatureChange}
+              name="temperature"
+              value={settings.temperature}
+              onChange={handleInputChange}
               min="0"
               max="50"
             />
@@ -107,11 +90,12 @@ const DeviceModal = ({ device, show, handleClose }) => {
           <Form.Group controlId="motionDetection">
             <Form.Check
               type="switch"
+              name="motionDetectionEnabled"
               label={`Motion Detection: ${
-                motionDetectionEnabled ? "Enabled" : "Disabled"
+                settings.motionDetectionEnabled ? "Enabled" : "Disabled"
               }`}
-              checked={motionDetectionEnabled}
-              onChange={handleMotionDetectionToggle}
+              checked={settings.motionDetectionEnabled}
+              onChange={handleInputChange}
             />
           </Form.Group>
         )}
@@ -126,13 +110,7 @@ const DeviceModal = ({ device, show, handleClose }) => {
           disabled={loading}
         >
           {loading ? (
-            <Spinner
-              as="span"
-              animation="border"
-              size="sm"
-              role="status"
-              aria-hidden="true"
-            />
+            <Spinner as="span" animation="border" size="sm" />
           ) : device.status ? (
             "Turn Off"
           ) : (
