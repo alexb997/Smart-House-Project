@@ -1,22 +1,24 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
-import axios from "axios";
+import { createDevice } from "../service/deviceService";
 import CreateDeviceModal from "../components/CreateDeviceModal";
 
-jest.mock("axios");
+jest.mock("../service/deviceService");
 
 describe("CreateDeviceModal Component", () => {
   const mockHandleClose = jest.fn();
+  const roomId = "room1";
+  const userId = "user1";
 
   beforeEach(() => {
-    axios.post.mockClear();
+    jest.clearAllMocks();
   });
 
-  test("renders modal and submits form", async () => {
-    axios.post.mockResolvedValueOnce({ data: { success: true } });
+  test("renders modal and submits form successfully", async () => {
+    createDevice.mockResolvedValueOnce({ data: { success: true } });
 
-    render(<CreateDeviceModal show={true} handleClose={mockHandleClose} />);
+    render(<CreateDeviceModal show={true} handleClose={mockHandleClose} roomId={roomId} userId={userId} />);
 
     const nameInput = screen.getByLabelText(/Device Name/i);
     const typeSelect = screen.getByLabelText(/Device Type/i);
@@ -29,21 +31,25 @@ describe("CreateDeviceModal Component", () => {
 
     fireEvent.click(createButton);
 
-    expect(axios.post).toHaveBeenCalledWith("/devices", {
-      name: "New Device",
-      type: "LIGHT",
-      status: true,
-      brightness: 0,
-      temperature: null,
+    expect(createDevice).toHaveBeenCalledWith({
+      device: {
+        name: "New Device",
+        type: "LIGHT",
+        status: true,
+        brightness: 0,
+        temperature: null,
+      },
+      roomId: roomId,
+      userId: userId,
     });
 
     expect(mockHandleClose).toHaveBeenCalled();
   });
 
-  test("shows error message on axios failure", async () => {
-    axios.post.mockRejectedValueOnce(new Error("Failed to create device"));
+  test("shows error message on device creation failure", async () => {
+    createDevice.mockRejectedValueOnce(new Error("Failed to create device"));
 
-    render(<CreateDeviceModal show={true} handleClose={mockHandleClose} />);
+    render(<CreateDeviceModal show={true} handleClose={mockHandleClose} roomId={roomId} userId={userId} />);
 
     const nameInput = screen.getByLabelText(/Device Name/i);
     const createButton = screen.getByText(/Create Device/i);
@@ -52,9 +58,30 @@ describe("CreateDeviceModal Component", () => {
 
     fireEvent.click(createButton);
 
-    expect(axios.post).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(createDevice).toHaveBeenCalled();
+      const errorMessage = screen.getByText(/Failed to create device/i);
+      expect(errorMessage).toBeInTheDocument();
+    });
+  });
 
-    const errorMessage = await screen.findByText(/Failed to create device/i);
-    expect(errorMessage).toBeInTheDocument();
+  test("displays brightness slider when LIGHT type is selected", () => {
+    render(<CreateDeviceModal show={true} handleClose={mockHandleClose} roomId={roomId} userId={userId} />);
+
+    const typeSelect = screen.getByLabelText(/Device Type/i);
+
+    fireEvent.change(typeSelect, { target: { value: "LIGHT" } });
+
+    expect(screen.getByLabelText(/Brightness/i)).toBeInTheDocument();
+  });
+
+  test("displays temperature input when THERMOSTAT type is selected", () => {
+    render(<CreateDeviceModal show={true} handleClose={mockHandleClose} roomId={roomId} userId={userId} />);
+
+    const typeSelect = screen.getByLabelText(/Device Type/i);
+
+    fireEvent.change(typeSelect, { target: { value: "THERMOSTAT" } });
+
+    expect(screen.getByLabelText(/Temperature/i)).toBeInTheDocument();
   });
 });

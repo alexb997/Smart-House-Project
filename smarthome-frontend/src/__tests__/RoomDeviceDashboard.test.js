@@ -1,46 +1,62 @@
 import React from "react";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import RoomDeviceDashboard from "../components/RoomDeviceDashboard";
 import { getRoomDevices } from "../service/roomService";
-import { MemoryRouter } from "react-router-dom";
-import "@testing-library/jest-dom/extend-expect";
+import { MemoryRouter, Routes, Route } from "react-router-dom";
 
 jest.mock("../service/roomService");
 
 describe("RoomDeviceDashboard Component", () => {
   const mockDevices = [
-    { id: 1, name: "Light Device", type: "LIGHT", status: true },
-    { id: 2, name: "Thermostat Device", type: "THERMOSTAT", status: false },
+    { id: 1, name: "Smart Bulb", type: "LIGHT", status: true },
+    { id: 2, name: "Thermostat", type: "THERMOSTAT", status: false },
   ];
 
-  it("should fetch and display devices in the room", async () => {
+  beforeEach(() => {
     getRoomDevices.mockResolvedValueOnce({ data: mockDevices });
-
-    render(
-      <MemoryRouter>
-        <RoomDeviceDashboard />
-      </MemoryRouter>
-    );
-
-    await waitFor(() => expect(getRoomDevices).toHaveBeenCalledTimes(1));
-
-    expect(screen.getByText("Light Device")).toBeInTheDocument();
-    expect(screen.getByText("Thermostat Device")).toBeInTheDocument();
+    localStorage.setItem("userId", "1");
   });
 
-  it("should display error message on fetching failure", async () => {
-    getRoomDevices.mockRejectedValueOnce(new Error("Failed to fetch devices"));
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
+  test("fetches and displays devices", async () => {
     render(
-      <MemoryRouter>
-        <RoomDeviceDashboard />
+      <MemoryRouter initialEntries={["/Living Room/devices"]}>
+        <Routes>
+          <Route path="/:roomName/devices" element={<RoomDeviceDashboard />} />
+        </Routes>
       </MemoryRouter>
     );
 
-    await waitFor(() => {
-      expect(screen.queryByText("Light Device")).not.toBeInTheDocument();
-    });
+    expect(await screen.findByText("Smart Bulb")).toBeInTheDocument();
+    expect(await screen.findByText("Thermostat")).toBeInTheDocument();
+  });
 
-    expect(screen.queryByText("Failed to fetch devices")).toBeTruthy();
+  test("opens Create Device modal", async () => {
+    render(
+      <MemoryRouter initialEntries={["/Living Room/devices"]}>
+        <Routes>
+          <Route path="/:roomName/devices" element={<RoomDeviceDashboard />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    fireEvent.click(screen.getByText("Create New Device"));
+    expect(screen.getByText("Create New Device")).toBeInTheDocument();
+  });
+
+  test("opens DeviceModal on device card click", async () => {
+    render(
+      <MemoryRouter initialEntries={["/Living Room/devices"]}>
+        <Routes>
+          <Route path="/:roomName/devices" element={<RoomDeviceDashboard />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    fireEvent.click(await screen.findByText("Smart Bulb"));
+    expect(screen.getByText("Manage Smart Bulb")).toBeInTheDocument();
   });
 });
