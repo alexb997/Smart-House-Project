@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Navbar, Nav, Container, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import "../styles/Navbar.css";
 
 const NavbarComponent = () => {
   const [username, setUsername] = useState(null);
@@ -21,9 +22,9 @@ const NavbarComponent = () => {
   };
 
   return (
-    <Navbar bg="light" expand="lg">
+    <Navbar expand="lg" sticky="top">
       <Container>
-        <Navbar.Brand as={Link} to="/">
+        <Navbar.Brand as={Link} className="brand" to="/">
           Smart Home
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />

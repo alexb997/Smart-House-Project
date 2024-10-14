@@ -1,0 +1,10 @@
+@import url("https://fonts.googleapis.com/css2?family=Kavoon&display=swap");
+
+.brand {
+  font-family: "Kavoon", cursive;
+}
+
+.navbar {
+  background-color: white;
+  clip-path: polygon(0 0%, 100% 0, 100% 0%, 95% 100%, 5% 100%, 0% 0%);
+}

@@ -1,0 +1,7 @@
+footer {
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  clip-path: polygon(0 100%, 5% 0, 95% 0, 100% 100%, 100% 100%, 0% 100%);
+  background-color: white;
+}

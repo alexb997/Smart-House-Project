@@ -80,12 +80,10 @@ const RoomList = () => {
 
   return (
     <Container className="mt-4">
-      <h2 className="text-center mb-4">Rooms</h2>
-      <Button
-        variant="primary"
-        className="mb-3"
-        onClick={() => handleShowModal()}
-      >
+      <h2 style={{ color: "white" }} className=" text-center mb-4">
+        Rooms
+      </h2>
+      <Button className="mb-3" onClick={() => handleShowModal()}>
         Add Room
       </Button>
       <Row>

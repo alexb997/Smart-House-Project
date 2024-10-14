@@ -63,6 +63,9 @@ The _Smart Home Automation System_ is a web application that simulates a smart h
 - **/smarthome-frontend**: Contains the Spring Boot backend with RESTful APIs for managing smart devices.
 - **/smarthouse-backend**: Contains the React frontend with components for displaying and controlling smart devices.
 
+## Project Design
+- https://www.figma.com/design/6uKS1tDQjdEM01S2CkBI9o/Smart-House
+
 ## Usage
 
 ### Access the Frontend

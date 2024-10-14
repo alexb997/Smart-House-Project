@@ -19,7 +19,7 @@ const App = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const username = localStorage.getItem("username");
+    const username = "test";
 
     if (!username) {
       navigate("/login");
