@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Navbar, Nav, Container, Button } from "react-bootstrap";
+import { Navbar, Nav, Container } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import "../styles/Navbar.css";
+import CustomButton from "./CustomButton";
 
 const NavbarComponent = () => {
   const [username, setUsername] = useState(null);
@@ -18,6 +19,10 @@ const NavbarComponent = () => {
   const handleLogout = () => {
     localStorage.removeItem("username");
     setUsername(null);
+    navigate("/login");
+  };
+
+  const handleLogin = () => {
     navigate("/login");
   };
 
@@ -45,13 +50,21 @@ const NavbarComponent = () => {
           </Nav>
           <Nav className="ms-auto">
             {username ? (
-              <Button variant="outline-danger" onClick={handleLogout}>
+              <CustomButton
+                content={"Logout"}
+                onClick={handleLogout}
+                className="customLogin"
+              >
                 Logout
-              </Button>
+              </CustomButton>
             ) : (
-              <Button variant="outline-primary" as={Link} to="/login">
+              <CustomButton
+                content={"Login"}
+                onClick={handleLogin}
+                className="customLogin"
+              >
                 Login
-              </Button>
+              </CustomButton>
             )}
           </Nav>
         </Navbar.Collapse>
