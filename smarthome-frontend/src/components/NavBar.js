@@ -35,16 +35,16 @@ const NavbarComponent = () => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link as={Link} to="/">
+            <Nav.Link className="custom-nav-link" as={Link} to="/">
               Dashboard
             </Nav.Link>
-            <Nav.Link as={Link} to="/logs">
+            <Nav.Link className="custom-nav-link" as={Link} to="/logs">
               Device Logs
             </Nav.Link>
-            <Nav.Link as={Link} to="/settings">
+            <Nav.Link className="custom-nav-link" as={Link} to="/settings">
               System Settings
             </Nav.Link>
-            <Nav.Link as={Link} to="/rooms">
+            <Nav.Link className="custom-nav-link" as={Link} to="/rooms">
               Rooms
             </Nav.Link>
           </Nav>

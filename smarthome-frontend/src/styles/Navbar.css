@@ -8,3 +8,17 @@
   background-color: white;
   clip-path: polygon(0 0%, 100% 0, 100% 0%, 95% 100%, 5% 100%, 0% 0%);
 }
+
+.custom-nav-link {
+  color: rgba(0, 0, 0, 0.5);
+  font-weight: 400;
+}
+
+.custom-nav-link:hover {
+  text-shadow: 2px 4px 4px rgba(0, 0, 0, 0.5);
+  font-weight: 600;
+}
+
+.custom-nav-link:active {
+  text-shadow: none;
+}
