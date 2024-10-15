@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
 import instance from "../axios";
 import {
-  Button,
   Modal,
   Form,
   Card,
   Container,
+  Button,
   Row,
   Col,
 } from "react-bootstrap";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import CustomButton from "./CustomButton";
 
 const RoomList = () => {
   const [rooms, setRooms] = useState([]);
@@ -83,9 +84,141 @@ const RoomList = () => {
       <h2 style={{ color: "white" }} className=" text-center mb-4">
         Rooms
       </h2>
-      <Button className="mb-3" onClick={() => handleShowModal()}>
-        Add Room
-      </Button>
+      <CustomButton
+        content="+ Add Room"
+        onClick={() => handleShowModal()}
+      ></CustomButton>
+      <p></p>
+      <Row>
+        <Col md={3} className="mb-4">
+          <Card
+            style={{
+              cursor: "pointer",
+              backgroundColor: "#C5DBDD",
+              borderRadius: "40px",
+            }}
+          >
+            <Card.Body>
+              <Card.Title style={{ textAlign: "center" }}>test</Card.Title>
+              <p>Number of devices:</p>
+              <p>Room temperature:</p>
+            </Card.Body>
+            <Card.Body>
+              <div className="d-flex justify-content-between">
+                <CustomButton
+                  content="Manage"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                ></CustomButton>
+                <CustomButton
+                  content="List Devices"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(1);
+                  }}
+                ></CustomButton>
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col md={3} className="mb-4">
+          <Card
+            style={{
+              cursor: "pointer",
+              backgroundColor: "#C5DBDD",
+              borderRadius: "40px",
+            }}
+          >
+            <Card.Body>
+              <Card.Title style={{ textAlign: "center" }}>test</Card.Title>
+              <p>Number of devices:</p>
+              <p>Room temperature:</p>
+            </Card.Body>
+            <Card.Body>
+              <div className="d-flex justify-content-between">
+                <CustomButton
+                  content="Manage"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                ></CustomButton>
+                <CustomButton
+                  content="List Devices"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(1);
+                  }}
+                ></CustomButton>
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col md={3} className="mb-4">
+          <Card
+            style={{
+              cursor: "pointer",
+              backgroundColor: "#C5DBDD",
+              borderRadius: "40px",
+            }}
+          >
+            <Card.Body>
+              <Card.Title style={{ textAlign: "center" }}>test</Card.Title>
+              <p>Number of devices:</p>
+              <p>Room temperature:</p>
+            </Card.Body>
+            <Card.Body>
+              <div className="d-flex justify-content-between">
+                <CustomButton
+                  content="Manage"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                ></CustomButton>
+                <CustomButton
+                  content="List Devices"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(1);
+                  }}
+                ></CustomButton>
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col md={3} className="mb-4">
+          <Card
+            style={{
+              cursor: "pointer",
+              backgroundColor: "#C5DBDD",
+              borderRadius: "40px",
+            }}
+          >
+            <Card.Body>
+              <Card.Title style={{ textAlign: "center" }}>test</Card.Title>
+              <p>Number of devices:</p>
+              <p>Room temperature:</p>
+            </Card.Body>
+            <Card.Body>
+              <div className="d-flex justify-content-between">
+                <CustomButton
+                  content="Manage"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                ></CustomButton>
+                <CustomButton
+                  content="List Devices"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(1);
+                  }}
+                ></CustomButton>
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
       <Row>
         {rooms.length > 0 ? (
           rooms.map((room) => (
