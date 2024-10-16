@@ -12,6 +12,7 @@ import {
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import CustomButton from "./CustomButton";
+import RoomCard from "./RoomCard";
 
 const RoomList = () => {
   const [rooms, setRooms] = useState([]);
@@ -70,7 +71,11 @@ const RoomList = () => {
     }
   };
 
-  const handleRoomClick = (roomName, roomId) => {
+  const onListDevices = (roomName, roomId) => {
+    navigate(`/${roomName}/devices`, { state: { roomId } });
+  };
+
+  const onManage = (roomName, roomId) => {
     navigate(`/${roomName}/devices`, { state: { roomId } });
   };
 
@@ -90,168 +95,13 @@ const RoomList = () => {
       ></CustomButton>
       <p></p>
       <Row>
-        <Col md={3} className="mb-4">
-          <Card
-            style={{
-              cursor: "pointer",
-              backgroundColor: "#C5DBDD",
-              borderRadius: "40px",
-            }}
-          >
-            <Card.Body>
-              <Card.Title style={{ textAlign: "center" }}>test</Card.Title>
-              <p>Number of devices:</p>
-              <p>Room temperature:</p>
-            </Card.Body>
-            <Card.Body>
-              <div className="d-flex justify-content-between">
-                <CustomButton
-                  content="Manage"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                  }}
-                ></CustomButton>
-                <CustomButton
-                  content="List Devices"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDelete(1);
-                  }}
-                ></CustomButton>
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={3} className="mb-4">
-          <Card
-            style={{
-              cursor: "pointer",
-              backgroundColor: "#C5DBDD",
-              borderRadius: "40px",
-            }}
-          >
-            <Card.Body>
-              <Card.Title style={{ textAlign: "center" }}>test</Card.Title>
-              <p>Number of devices:</p>
-              <p>Room temperature:</p>
-            </Card.Body>
-            <Card.Body>
-              <div className="d-flex justify-content-between">
-                <CustomButton
-                  content="Manage"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                  }}
-                ></CustomButton>
-                <CustomButton
-                  content="List Devices"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDelete(1);
-                  }}
-                ></CustomButton>
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={3} className="mb-4">
-          <Card
-            style={{
-              cursor: "pointer",
-              backgroundColor: "#C5DBDD",
-              borderRadius: "40px",
-            }}
-          >
-            <Card.Body>
-              <Card.Title style={{ textAlign: "center" }}>test</Card.Title>
-              <p>Number of devices:</p>
-              <p>Room temperature:</p>
-            </Card.Body>
-            <Card.Body>
-              <div className="d-flex justify-content-between">
-                <CustomButton
-                  content="Manage"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                  }}
-                ></CustomButton>
-                <CustomButton
-                  content="List Devices"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDelete(1);
-                  }}
-                ></CustomButton>
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={3} className="mb-4">
-          <Card
-            style={{
-              cursor: "pointer",
-              backgroundColor: "#C5DBDD",
-              borderRadius: "40px",
-            }}
-          >
-            <Card.Body>
-              <Card.Title style={{ textAlign: "center" }}>test</Card.Title>
-              <p>Number of devices:</p>
-              <p>Room temperature:</p>
-            </Card.Body>
-            <Card.Body>
-              <div className="d-flex justify-content-between">
-                <CustomButton
-                  content="Manage"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                  }}
-                ></CustomButton>
-                <CustomButton
-                  content="List Devices"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDelete(1);
-                  }}
-                ></CustomButton>
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-      <Row>
         {rooms.length > 0 ? (
           rooms.map((room) => (
-            <Col md={4} key={room.id} className="mb-4">
-              <Card
-                onClick={() => handleRoomClick(room.name, room.id)}
-                style={{ cursor: "pointer" }}
-              >
-                <Card.Body>
-                  <Card.Title>{room.name}</Card.Title>
-                  <div className="d-flex justify-content-between">
-                    <Button
-                      variant="warning"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleShowModal(room);
-                      }}
-                    >
-                      <FaEdit /> Edit
-                    </Button>
-                    <Button
-                      variant="danger"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDelete(room.id);
-                      }}
-                    >
-                      <FaTrash /> Delete
-                    </Button>
-                  </div>
-                </Card.Body>
-              </Card>
-            </Col>
+            <RoomCard
+              room={room}
+              onManage={() => onManage(room.name, room.id)}
+              onListDevices={() => onListDevices(room.name, room.id)}
+            ></RoomCard>
           ))
         ) : (
           <Col>

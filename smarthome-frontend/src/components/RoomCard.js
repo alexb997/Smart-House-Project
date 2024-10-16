@@ -1,13 +1,34 @@
-import React from 'react';
-import { Card } from '@material-ui/core';
+import React from "react";
+import CustomButton from "./CustomButton";
+import { Col, Card } from "react-bootstrap";
 
-const RoomCard = ({ room, onSelectRoom }) => {
+function RoomCard({ room, onManage, onListDevices }) {
   return (
-    <Card onClick={() => onSelectRoom(room.id)} className="room-card">
-      <h3>{room.name}</h3>
-      <p>{room.devices.length} Devices</p>
-    </Card>
+    <Col md={4} key={room.id} className="mb-4">
+      <Card
+        style={{
+          cursor: "pointer",
+          backgroundColor: "#C5DBDD",
+          borderRadius: "40px",
+        }}
+      >
+        <Card.Body>
+          <Card.Title style={{ textAlign: "center" }}>{room.name}</Card.Title>
+          <p>Number of devices: {room.devices.length}</p>
+          <p>Room temperature: </p>
+        </Card.Body>
+        <Card.Body>
+          <div className="d-flex justify-content-between">
+            <CustomButton content="Manage" onClick={onManage}></CustomButton>
+            <CustomButton
+              content="List Devices"
+              onClick={onListDevices}
+            ></CustomButton>
+          </div>
+        </Card.Body>
+      </Card>
+    </Col>
   );
-};
+}
 
 export default RoomCard;
