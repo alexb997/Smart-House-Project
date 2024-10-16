@@ -5,6 +5,7 @@ import CreateDeviceModal from "../components/CreateDeviceModal"; // Import the m
 import { useParams, useLocation } from "react-router-dom";
 import { getRoomDevices } from "../service/roomService";
 import { Button, Container, Row, Col } from "react-bootstrap";
+import CustomButton from "../components/CustomButton";
 
 const RoomDeviceDashboard = () => {
   const { roomName } = useParams();
@@ -45,14 +46,15 @@ const RoomDeviceDashboard = () => {
   return (
     <Container>
       <h2>Devices in {roomName}</h2>
-
-      <Button onClick={toggleCreateModal} className="mb-4">
-        Create New Device
-      </Button>
+      <CustomButton
+        content="Add new device"
+        onClick={toggleCreateModal}
+      ></CustomButton>
+      <p></p>
 
       <Row>
         {devices.map((device) => (
-          <Col xs={12} sm={6} md={4} className="mb-3" key={device.id}>
+          <Col xs={12} sm={6} md={3} key={device.id}>
             <DeviceCard
               device={device}
               onClick={() => {

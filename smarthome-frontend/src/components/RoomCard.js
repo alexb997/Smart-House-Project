@@ -4,7 +4,7 @@ import { Col, Card } from "react-bootstrap";
 
 function RoomCard({ room, onManage, onListDevices }) {
   return (
-    <Col md={4} key={room.id} className="mb-4">
+    <Col md={3} key={room.id} className="mb-4">
       <Card
         style={{
           cursor: "pointer",
@@ -18,7 +18,7 @@ function RoomCard({ room, onManage, onListDevices }) {
           <p>Room temperature: </p>
         </Card.Body>
         <Card.Body>
-          <div className="d-flex justify-content-between">
+          <div className="d-flex justify-content-around">
             <CustomButton content="Manage" onClick={onManage}></CustomButton>
             <CustomButton
               content="List Devices"

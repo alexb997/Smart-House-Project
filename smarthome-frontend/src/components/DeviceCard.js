@@ -1,27 +1,21 @@
 import React from "react";
 import { Card, Button } from "react-bootstrap";
 import PropTypes from "prop-types";
+import CustomButton from "./CustomButton";
 
 const DeviceCard = ({ device, onClick }) => {
   const cardStyle = {
-    width: "18rem",
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-    borderRadius: "8px",
+    backgroundColor: "#C5DBDD",
+    borderRadius: "40px",
     marginBottom: "20px",
-    transition: "transform 0.2s",
-    cursor: onClick ? "pointer" : "default",
   };
 
   return (
-    <Card
-      style={cardStyle}
-      onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
-      onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
-      onClick={onClick}
-      className="device-card"
-    >
+    <Card style={cardStyle} onClick={onClick} className="device-card">
       <Card.Body>
-        <Card.Title>{device.name || "Unnamed Device"}</Card.Title>
+        <Card.Title style={{ textAlign: "center" }}>
+          {device.name || "Unnamed Device"}
+        </Card.Title>
         <Card.Subtitle className="mb-2 text-muted">
           Type: {device.type}
         </Card.Subtitle>
@@ -37,13 +31,15 @@ const DeviceCard = ({ device, onClick }) => {
         )}
         {device.motionDetectionEnabled !== null && (
           <Card.Text>
-            Motion Detection: {device.motionDetectionEnabled ? "Enabled" : "Disabled"}
+            Motion Detection:{" "}
+            {device.motionDetectionEnabled ? "Enabled" : "Disabled"}
           </Card.Text>
         )}
 
-        <Button variant="primary" onClick={onClick} disabled={!onClick}>
-          Manage
-        </Button>
+        <div className="d-flex justify-content-around">
+          <CustomButton content="Manage" onClick={onClick}></CustomButton>
+          <CustomButton content="Remove" onClick={onClick}></CustomButton>
+        </div>
       </Card.Body>
     </Card>
   );
