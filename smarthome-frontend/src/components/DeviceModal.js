@@ -27,20 +27,17 @@ const DeviceModal = ({ device, show, handleClose }) => {
     }));
   };
 
-  const handleUpdateDevice = async (newSettings) => {
+  const handleUpdateDevice = async () => {
     setLoading(true);
     setError(null);
     try {
-      await updateDeviceSettings(device.id, newSettings);
+      await updateDeviceSettings(device.id, settings);
     } catch (err) {
       setError("Failed to update device settings. Please try again.");
     } finally {
       setLoading(false);
     }
   };
-
-  const handleToggleDevice = () =>
-    handleUpdateDevice({ status: !device.status });
 
   return (
     <Modal show={show} onHide={handleClose} centered>
@@ -105,16 +102,14 @@ const DeviceModal = ({ device, show, handleClose }) => {
           Close
         </Button>
         <Button
-          variant={device.status ? "danger" : "primary"}
-          onClick={handleToggleDevice}
+          variant="primary"
+          onClick={handleUpdateDevice}
           disabled={loading}
         >
           {loading ? (
             <Spinner as="span" animation="border" size="sm" />
-          ) : device.status ? (
-            "Turn Off"
           ) : (
-            "Turn On"
+            "Update"
           )}
         </Button>
       </Modal.Footer>

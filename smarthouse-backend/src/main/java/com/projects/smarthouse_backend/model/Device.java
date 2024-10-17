@@ -16,11 +16,10 @@ public class Device {
     private Long id;
 
     private String name;
+    private boolean status;
 
     @Enumerated(EnumType.STRING)
     private DeviceType type;
-
-    private boolean status;
 
     @Column(nullable = true)
     private Integer brightness;
