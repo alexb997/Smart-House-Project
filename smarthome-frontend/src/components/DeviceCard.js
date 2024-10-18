@@ -2,6 +2,7 @@ import React from "react";
 import { Card, Button } from "react-bootstrap";
 import PropTypes from "prop-types";
 import CustomButton from "./CustomButton";
+import DeviceDetails from "./DeviceDetails";
 
 const DeviceCard = ({ device, onClick }) => {
   const cardStyle = {
@@ -23,18 +24,7 @@ const DeviceCard = ({ device, onClick }) => {
           Status: {device.status ? "On" : "Off"}
         </Card.Subtitle>
 
-        {device.brightness !== null && (
-          <Card.Text>Brightness: {device.brightness}%</Card.Text>
-        )}
-        {device.temperature !== null && (
-          <Card.Text>Temperature: {device.temperature}°C</Card.Text>
-        )}
-        {device.motionDetectionEnabled !== null && (
-          <Card.Text>
-            Motion Detection:{" "}
-            {device.motionDetectionEnabled ? "Enabled" : "Disabled"}
-          </Card.Text>
-        )}
+        <DeviceDetails device={device} />
 
         <div className="d-flex justify-content-around">
           <CustomButton content="Manage" onClick={onClick}></CustomButton>

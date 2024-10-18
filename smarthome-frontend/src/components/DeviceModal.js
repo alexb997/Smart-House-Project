@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Modal,
   Button,
@@ -9,8 +9,10 @@ import {
 } from "react-bootstrap";
 import { updateDeviceSettings } from "../service/deviceService";
 import PropTypes from "prop-types";
+import TypeSetting from "./TypeSetting";
 
 const DeviceModal = ({ device, show, handleClose }) => {
+  const [type, setType] = useState(device.type);
   const [settings, setSettings] = useState({
     brightness: device.brightness || 0,
     temperature: device.temperature || 0,
@@ -31,7 +33,13 @@ const DeviceModal = ({ device, show, handleClose }) => {
     setLoading(true);
     setError(null);
     try {
-      await updateDeviceSettings(device.id, settings);
+      device.temperature =
+        settings.temperature > 0 ? settings.temperature : null;
+      device.brightness = settings.brightness > 0 ? settings.brightness : null;
+      device.motionDetectionEnabled = settings.motionDetectionEnabled
+        ? settings.motionDetectionEnabled
+        : null;
+      await updateDeviceSettings(device.id, device);
     } catch (err) {
       setError("Failed to update device settings. Please try again.");
     } finally {
@@ -52,50 +60,11 @@ const DeviceModal = ({ device, show, handleClose }) => {
         <p>
           <strong>Status:</strong> {device.status ? "On" : "Off"}
         </p>
-
-        {device.type === "LIGHT" && (
-          <Form.Group controlId="brightness">
-            <Form.Label>Brightness: {settings.brightness}%</Form.Label>
-            <InputGroup>
-              <Form.Control
-                type="range"
-                name="brightness"
-                min="0"
-                max="100"
-                value={settings.brightness}
-                onChange={handleInputChange}
-              />
-            </InputGroup>
-          </Form.Group>
-        )}
-
-        {device.type === "THERMOSTAT" && (
-          <Form.Group controlId="temperature">
-            <Form.Label>Temperature: {settings.temperature}°C</Form.Label>
-            <Form.Control
-              type="number"
-              name="temperature"
-              value={settings.temperature}
-              onChange={handleInputChange}
-              min="0"
-              max="50"
-            />
-          </Form.Group>
-        )}
-
-        {device.type === "CAMERA" && (
-          <Form.Group controlId="motionDetection">
-            <Form.Check
-              type="switch"
-              name="motionDetectionEnabled"
-              label={`Motion Detection: ${
-                settings.motionDetectionEnabled ? "Enabled" : "Disabled"
-              }`}
-              checked={settings.motionDetectionEnabled}
-              onChange={handleInputChange}
-            />
-          </Form.Group>
-        )}
+        <TypeSetting
+          device={device}
+          settings={settings}
+          handleInputChange={handleInputChange}
+        />
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>
