@@ -14,3 +14,5 @@ export const removeDevice = (deviceId) =>
   axios.delete(`${API_BASE_URL}/devices/${deviceId}`);
 export const assignDeviceToRoom = (deviceId, roomId) =>
   axios.post(`${API_BASE_URL}/devices/${deviceId}/assign-room/${roomId}`);
+export const updateDeviceTemperature = (deviceId, temperature) =>
+  axios.put(`${API_BASE_URL}/devices/${deviceId}`, { temperature });

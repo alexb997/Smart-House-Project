@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { Modal, Button, Form, Alert } from "react-bootstrap";
 import { createDevice } from "../service/deviceService";
 
@@ -12,15 +12,15 @@ const CreateDeviceModal = ({ show, handleClose, roomId, userId }) => {
   });
   const [error, setError] = useState(null);
 
-  const handleInputChange = (e) => {
+  const handleInputChange = useCallback((e) => {
     const { name, value, type, checked } = e.target;
     setDeviceData((prevState) => ({
       ...prevState,
       [name]: type === "checkbox" ? checked : value,
     }));
-  };
+  }, []);
 
-  const handleSubmit = async () => {
+  const handleSubmit = useCallback(async () => {
     const { name, type, status, brightness, temperature } = deviceData;
     const newDevice = {
       name,
@@ -29,20 +29,15 @@ const CreateDeviceModal = ({ show, handleClose, roomId, userId }) => {
       brightness: type === "LIGHT" ? brightness : null,
       temperature: type === "THERMOSTAT" ? temperature : null,
     };
-    const createdDevice = {
-      device: newDevice,
-      roomId: roomId,
-      userId: userId,
-    };
 
     try {
-      await createDevice(createdDevice);
+      await createDevice({ device: newDevice, roomId, userId });
       handleClose();
     } catch (err) {
-      setError("Failed to create device.");
+      setError("Failed to create device. Please try again.");
       console.error(err);
     }
-  };
+  }, [deviceData, roomId, userId, handleClose]);
 
   return (
     <Modal show={show} onHide={handleClose} centered>
@@ -71,12 +66,13 @@ const CreateDeviceModal = ({ show, handleClose, roomId, userId }) => {
               value={deviceData.type}
               onChange={handleInputChange}
             >
-              <option value="LIGHT">Light</option>
-              <option value="THERMOSTAT">Thermostat</option>
-              <option value="CAMERA">Camera</option>
-              <option value="DOORBELL">Doorbell</option>
-              <option value="LOCK">Lock</option>
-              <option value="SENSOR">Sensor</option>
+              {["LIGHT", "THERMOSTAT", "CAMERA", "DOORBELL", "LOCK", "SENSOR"].map(
+                (deviceType) => (
+                  <option key={deviceType} value={deviceType}>
+                    {deviceType.charAt(0) + deviceType.slice(1).toLowerCase()}
+                  </option>
+                )
+              )}
             </Form.Control>
           </Form.Group>
 
