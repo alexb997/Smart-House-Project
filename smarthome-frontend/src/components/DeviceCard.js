@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Button } from "react-bootstrap";
+import { Card } from "react-bootstrap";
 import PropTypes from "prop-types";
 import CustomButton from "./CustomButton";
 import DeviceDetails from "./DeviceDetails";

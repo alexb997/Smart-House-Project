@@ -1,18 +1,10 @@
 import React, { useEffect, useState } from "react";
-import {
-  Modal,
-  Button,
-  Form,
-  InputGroup,
-  Spinner,
-  Alert,
-} from "react-bootstrap";
+import { Modal, Button, Spinner, Alert } from "react-bootstrap";
 import { updateDeviceSettings } from "../service/deviceService";
 import PropTypes from "prop-types";
 import TypeSetting from "./TypeSetting";
 
 const DeviceModal = ({ device, show, handleClose }) => {
-  const [type, setType] = useState(device.type);
   const [settings, setSettings] = useState({
     brightness: device.brightness || 0,
     temperature: device.temperature || 0,
