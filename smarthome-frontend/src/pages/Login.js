@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { loginUser } from "../service/userService";
+import "../styles/Login.css";
+import CustomButton from "../components/CustomButton";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -21,7 +23,6 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await loginUser(formData);
-      console.log(response.data);
       localStorage.setItem("username", response.data.username);
       localStorage.setItem("userId", response.data.id);
       setSuccess("Login successful");
@@ -36,7 +37,7 @@ const Login = () => {
     <div className="container mt-5">
       <div className="row justify-content-center">
         <div className="col-md-6">
-          <div className="card">
+          <div className="custom-login-card">
             <div className="card-body">
               <h3 className="text-center">Login</h3>
               {error && <div className="alert alert-danger">{error}</div>}
@@ -64,9 +65,8 @@ const Login = () => {
                     required
                   />
                 </div>
-                <button type="submit" className="btn btn-primary mt-3">
-                  Login
-                </button>
+                <p></p>
+                <CustomButton type="submit" content="Login"></CustomButton>
               </form>
             </div>
           </div>

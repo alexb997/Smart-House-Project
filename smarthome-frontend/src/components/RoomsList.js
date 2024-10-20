@@ -110,7 +110,6 @@ const RoomList = () => {
         )}
       </Row>
 
-      {/* Room Modal */}
       <Modal show={showModal} onHide={closeModal}>
         <Modal.Header closeButton>
           <Modal.Title>{isEditing ? "Edit Room" : "Add Room"}</Modal.Title>

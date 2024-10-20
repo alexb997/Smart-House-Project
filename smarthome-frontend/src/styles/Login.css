@@ -1,0 +1,14 @@
+.custom-login-card {
+  background-color: #a4c7dd;
+  border-radius: 20px;
+  padding: 50px;
+  box-shadow: 5px 10px 10px rgba(0, 0, 0, 0.25);
+  transition: box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+input {
+  background-color: #a8d5ff !important;
+  border-color: #a8d5ff !important;
+  box-shadow: 5px 10px 10px rgba(0, 0, 0, 0.25);
+  transition: box-shadow 0.3s ease, background-color 0.3s ease;
+}
