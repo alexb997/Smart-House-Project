@@ -2,14 +2,35 @@ import React, { useState } from "react";
 import { Col, Card, Form } from "react-bootstrap";
 import { updateDeviceTemperature } from "../service/deviceService";
 
+const deviceTypes = {
+  LIGHT: "LIGHT",
+  THERMOSTAT: "THERMOSTAT",
+  CAMERA: "CAMERA",
+  DOORBELL: "DOORBELL",
+  LOCK: "LOCK",
+  SENSOR: "SENSOR",
+};
+
 function RoomCard({ room, onManage, onListDevices }) {
+  
   const thermometerDevice = room.devices.find(
     (device) => device.type === "THERMOSTAT" && device.temperature !== null
   );
 
+  const lightDevice = room.devices.find((device) => device.type === deviceTypes.LIGHT);
+  const lockDevice = room.devices.find((device) => device.type === deviceTypes.LOCK);
+  const doorbellDevice = room.devices.find((device) => device.type === deviceTypes.DOORBELL);
+  const cameraDevice = room.devices.find((device) => device.type === deviceTypes.CAMERA);
+
+
   const [temperature, setTemperature] = useState(
     thermometerDevice ? thermometerDevice.temperature : ""
   );
+  const [lightState, setLightState] = useState(lightDevice ? lightDevice.state : false);
+  const [lockState, setLockState] = useState(lockDevice ? lockDevice.state : false);
+
+  const [isEditingTemp, setIsEditingTemp] = useState(false);
+
   const [isEditing, setIsEditing] = useState(false);
 
   const handleTemperatureChange = (e) => {
@@ -30,6 +51,26 @@ function RoomCard({ room, onManage, onListDevices }) {
       saveTemperature();
     } else {
       setIsEditing(true);
+    }
+  };
+
+  const toggleLight = async () => {
+    try {
+      const newLightState = !lightState;
+      await updateDeviceState(lightDevice.id, newLightState);
+      setLightState(newLightState);
+    } catch (error) {
+      console.error("Error toggling light:", error);
+    }
+  };
+
+  const toggleLock = async () => {
+    try {
+      const newLockState = !lockState;
+      await updateDeviceState(lockDevice.id, newLockState);
+      setLockState(newLockState);
+    } catch (error) {
+      console.error("Error toggling lock:", error);
     }
   };
 
@@ -65,6 +106,43 @@ function RoomCard({ room, onManage, onListDevices }) {
             </>
           ) : (
             <p>No temperature sensor available</p>
+          )}
+          {lightDevice ? (
+            <>
+              <p>Light: {lightState ? "On" : "Off"}</p>
+              <button onClick={toggleLight}>
+                Turn {lightState ? "Off" : "On"}
+              </button>
+            </>
+          ) : (
+            <p>No lights available</p>
+          )}
+
+          {lockDevice ? (
+            <>
+              <p>Lock: {lockState ? "Locked" : "Unlocked"}</p>
+              <button onClick={toggleLock}>
+                {lockState ? "Unlock" : "Lock"}
+              </button>
+            </>
+          ) : (
+            <p>No locks available</p>
+          )}
+
+          {cameraDevice ? (
+            <>
+              <p>Camera available</p>
+            </>
+          ) : (
+            <p>No cameras available</p>
+          )}
+
+          {doorbellDevice ? (
+            <>
+              <p>Doorbell available</p>
+            </>
+          ) : (
+            <p>No doorbell available</p>
           )}
         </Card.Body>
         <Card.Body>
