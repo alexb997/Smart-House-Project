@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import { Col, Card, Form } from "react-bootstrap";
-import { updateDeviceTemperature } from "../service/deviceService";
+import {
+  controlDevice,
+  updateDeviceTemperature,
+} from "../service/deviceService";
+
+import CustomButton from "./CustomButton";
 
 const deviceTypes = {
   LIGHT: "LIGHT",
@@ -12,22 +17,32 @@ const deviceTypes = {
 };
 
 function RoomCard({ room, onManage, onListDevices }) {
-  
   const thermometerDevice = room.devices.find(
     (device) => device.type === "THERMOSTAT" && device.temperature !== null
   );
 
-  const lightDevice = room.devices.find((device) => device.type === deviceTypes.LIGHT);
-  const lockDevice = room.devices.find((device) => device.type === deviceTypes.LOCK);
-  const doorbellDevice = room.devices.find((device) => device.type === deviceTypes.DOORBELL);
-  const cameraDevice = room.devices.find((device) => device.type === deviceTypes.CAMERA);
-
+  const lightDevice = room.devices.find(
+    (device) => device.type === deviceTypes.LIGHT
+  );
+  const lockDevice = room.devices.find(
+    (device) => device.type === deviceTypes.LOCK
+  );
+  const doorbellDevice = room.devices.find(
+    (device) => device.type === deviceTypes.DOORBELL
+  );
+  const cameraDevice = room.devices.find(
+    (device) => device.type === deviceTypes.CAMERA
+  );
 
   const [temperature, setTemperature] = useState(
     thermometerDevice ? thermometerDevice.temperature : ""
   );
-  const [lightState, setLightState] = useState(lightDevice ? lightDevice.state : false);
-  const [lockState, setLockState] = useState(lockDevice ? lockDevice.state : false);
+  const [lightState, setLightState] = useState(
+    lightDevice ? lightDevice.state : false
+  );
+  const [lockState, setLockState] = useState(
+    lockDevice ? lockDevice.state : false
+  );
 
   const [isEditingTemp, setIsEditingTemp] = useState(false);
 
@@ -57,7 +72,7 @@ function RoomCard({ room, onManage, onListDevices }) {
   const toggleLight = async () => {
     try {
       const newLightState = !lightState;
-      await updateDeviceState(lightDevice.id, newLightState);
+      await controlDevice(lightDevice.id, newLightState);
       setLightState(newLightState);
     } catch (error) {
       console.error("Error toggling light:", error);
@@ -67,7 +82,7 @@ function RoomCard({ room, onManage, onListDevices }) {
   const toggleLock = async () => {
     try {
       const newLockState = !lockState;
-      await updateDeviceState(lockDevice.id, newLockState);
+      await controlDevice(lockDevice.id, newLockState);
       setLockState(newLockState);
     } catch (error) {
       console.error("Error toggling lock:", error);
@@ -87,32 +102,42 @@ function RoomCard({ room, onManage, onListDevices }) {
           <Card.Title className="text-center">{room.name}</Card.Title>
           {thermometerDevice ? (
             <>
-              <p>Room temperature:</p>
-              {isEditing ? (
-                <Form.Control
-                  type="number"
-                  value={temperature}
-                  onChange={handleTemperatureChange}
-                  min="0"
-                  max="50"
-                  className="mb-2"
-                  onBlur={saveTemperature}
-                />
-              ) : (
-                <p onClick={handleTemperatureClick} style={{ cursor: "pointer" }}>
-                  {temperature}°C
-                </p>
-              )}
+              <p>
+                Room temperature:
+                <span>
+                  {isEditing ? (
+                    <Form.Control
+                      type="number"
+                      value={temperature}
+                      onChange={handleTemperatureChange}
+                      min="0"
+                      max="50"
+                      className="mb-2"
+                      onBlur={saveTemperature}
+                    />
+                  ) : (
+                    <p
+                      onClick={handleTemperatureClick}
+                      style={{ cursor: "pointer" }}
+                    >
+                      {temperature}°C
+                    </p>
+                  )}
+                </span>
+              </p>
             </>
           ) : (
             <p>No temperature sensor available</p>
           )}
           {lightDevice ? (
             <>
-              <p>Light: {lightState ? "On" : "Off"}</p>
-              <button onClick={toggleLight}>
-                Turn {lightState ? "Off" : "On"}
-              </button>
+              <p>
+                Light:{" "}
+                <CustomButton
+                  content={lightState ? "On" : "Off"}
+                  onClick={toggleLight}
+                ></CustomButton>
+              </p>
             </>
           ) : (
             <p>No lights available</p>
