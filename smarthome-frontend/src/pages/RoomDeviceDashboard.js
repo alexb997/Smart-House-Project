@@ -45,7 +45,7 @@ const RoomDeviceDashboard = () => {
 
   return (
     <Container>
-      <h2>Devices in {roomName}</h2>
+      <h2 style={{ color: "white" }}>Devices in {roomName}</h2>
       <CustomButton
         content="Add new device"
         onClick={toggleCreateModal}

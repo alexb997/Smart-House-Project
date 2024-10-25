@@ -172,8 +172,8 @@ function RoomCard({ room, onManage, onListDevices }) {
         </Card.Body>
         <Card.Body>
           <div className="d-flex justify-content-around">
-            <button onClick={onManage}>Manage</button>
-            <button onClick={onListDevices}>List Devices</button>
+            <CustomButton content={"Manage"} onClick={onManage} />
+            <CustomButton content={"List Devices"} onClick={onListDevices} />
           </div>
         </Card.Body>
       </Card>
