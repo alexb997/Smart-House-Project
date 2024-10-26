@@ -9,7 +9,6 @@ import {
   Row,
   Col,
 } from "react-bootstrap";
-import { FaEdit, FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import CustomButton from "./CustomButton";
 import RoomCard from "./RoomCard";

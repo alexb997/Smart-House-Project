@@ -3,12 +3,14 @@ import { Modal, Button, Spinner, Alert } from "react-bootstrap";
 import { updateDeviceSettings } from "../service/deviceService";
 import PropTypes from "prop-types";
 import TypeSetting from "./TypeSetting";
+import CustomButton from "./CustomButton";
 
 const DeviceModal = ({ device, show, handleClose }) => {
   const [settings, setSettings] = useState({
     brightness: device.brightness || 0,
     temperature: device.temperature || 0,
     motionDetectionEnabled: device.motionDetectionEnabled || false,
+    status: device.status,
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -18,6 +20,13 @@ const DeviceModal = ({ device, show, handleClose }) => {
     setSettings((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  const toggleStatus = () => {
+    setSettings((prev) => ({
+      ...prev,
+      status: !prev.status,
     }));
   };
 
@@ -31,7 +40,9 @@ const DeviceModal = ({ device, show, handleClose }) => {
       device.motionDetectionEnabled = settings.motionDetectionEnabled
         ? settings.motionDetectionEnabled
         : null;
+      device.status = settings.status;
       await updateDeviceSettings(device.id, device);
+      handleClose();
     } catch (err) {
       setError("Failed to update device settings. Please try again.");
     } finally {
@@ -41,24 +52,38 @@ const DeviceModal = ({ device, show, handleClose }) => {
 
   return (
     <Modal show={show} onHide={handleClose} centered>
-      <Modal.Header closeButton>
+      <Modal.Header
+        style={{
+          backgroundColor: "#C5DBDD",
+        }}
+        closeButton
+      >
         <Modal.Title>Manage {device.name}</Modal.Title>
       </Modal.Header>
-      <Modal.Body>
+      <Modal.Body
+        style={{
+          backgroundColor: "#C5DBDD",
+        }}
+      >
         {error && <Alert variant="danger">{error}</Alert>}
         <p>
           <strong>Device Type:</strong> {device.type}
         </p>
-        <p>
-          <strong>Status:</strong> {device.status ? "On" : "Off"}
-        </p>
+        <CustomButton
+          content={settings.status ? "Turn Off" : "Turn On"}
+          onClick={toggleStatus}
+        />
         <TypeSetting
           device={device}
           settings={settings}
           handleInputChange={handleInputChange}
         />
       </Modal.Body>
-      <Modal.Footer>
+      <Modal.Footer
+        style={{
+          backgroundColor: "#C5DBDD",
+        }}
+      >
         <Button variant="secondary" onClick={handleClose}>
           Close
         </Button>

@@ -93,7 +93,6 @@ function RoomCard({ room, onManage, onListDevices }) {
     <Col md={3} className="mb-4">
       <Card
         style={{
-          cursor: "pointer",
           backgroundColor: "#C5DBDD",
           borderRadius: "40px",
         }}

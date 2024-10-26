@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import DeviceCard from "../components/DeviceCard";
 import DeviceModal from "../components/DeviceModal";
-import CreateDeviceModal from "../components/CreateDeviceModal"; // Import the modal for creating a device
+import CreateDeviceModal from "../components/CreateDeviceModal";
 import { useParams, useLocation } from "react-router-dom";
 import { getRoomDevices } from "../service/roomService";
-import { Button, Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col } from "react-bootstrap";
 import CustomButton from "../components/CustomButton";
 
 const RoomDeviceDashboard = () => {
@@ -15,7 +15,7 @@ const RoomDeviceDashboard = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [devices, setDevices] = useState([]);
   const [selectedDevice, setSelectedDevice] = useState(null);
-  const [createModalOpen, setCreateModalOpen] = useState(false); // State for the Create Device modal
+  const [createModalOpen, setCreateModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchDevices = async () => {
