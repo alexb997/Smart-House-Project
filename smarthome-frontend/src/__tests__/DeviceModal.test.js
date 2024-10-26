@@ -1,80 +1,84 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import DeviceModal from "../components/DeviceModal";
+import DeviceModal from "./DeviceModal";
 import { updateDeviceSettings } from "../service/deviceService";
+import '@testing-library/jest-dom/extend-expect';
 
-jest.mock("../service/deviceService");
+jest.mock("../service/deviceService", () => ({
+  updateDeviceSettings: jest.fn(),
+}));
 
-describe("DeviceModal Component", () => {
-  const device = {
-    id: 1,
-    name: "Living Room Light",
-    type: "LIGHT",
-    status: true,
-    brightness: 75,
-    temperature: null,
-    motionDetectionEnabled: null,
-  };
+const mockDevice = {
+  id: 1,
+  name: "Test Device",
+  type: "Sensor",
+  status: true,
+  brightness: 50,
+  temperature: 20,
+  motionDetectionEnabled: true,
+};
 
-  const mockHandleClose = jest.fn();
+describe("DeviceModal", () => {
+  const handleClose = jest.fn();
 
-  beforeEach(() => {
-    jest.clearAllMocks();
+  test("renders device information correctly", () => {
+    render(<DeviceModal device={mockDevice} show={true} handleClose={handleClose} />);
+    
+    expect(screen.getByText("Manage Test Device")).toBeInTheDocument();
+    expect(screen.getByText("Device Type: Sensor")).toBeInTheDocument();
+    expect(screen.getByText("Turn Off")).toBeInTheDocument();  // Status button text
   });
 
-  test("renders modal with device information", () => {
-    render(
-      <DeviceModal device={device} show={true} handleClose={mockHandleClose} />
-    );
-
-    expect(screen.getByText(/Manage Living Room Light/i)).toBeInTheDocument();
-    expect(screen.getByText(/Device Type:/i)).toHaveTextContent(
-      "Device Type: LIGHT"
-    );
-    expect(screen.getByText(/Status:/i)).toHaveTextContent("Status: On");
-    expect(screen.getByLabelText(/Brightness:/i)).toHaveValue(75);
+  test("toggles device status when the button is clicked", () => {
+    render(<DeviceModal device={mockDevice} show={true} handleClose={handleClose} />);
+    
+    const toggleButton = screen.getByText("Turn Off");
+    fireEvent.click(toggleButton);
+    expect(toggleButton.textContent).toBe("Turn On");
+    
+    fireEvent.click(toggleButton);
+    expect(toggleButton.textContent).toBe("Turn Off");
   });
 
-  test("updates brightness value on input change", () => {
-    render(
-      <DeviceModal device={device} show={true} handleClose={mockHandleClose} />
-    );
+  test("updates input values when changed", () => {
+    render(<DeviceModal device={mockDevice} show={true} handleClose={handleClose} />);
+    
+    const brightnessInput = screen.getByLabelText(/brightness/i);
+    fireEvent.change(brightnessInput, { target: { value: 80 } });
+    expect(brightnessInput.value).toBe("80");
 
-    const brightnessInput = screen.getByLabelText(/Brightness:/i);
-    fireEvent.change(brightnessInput, { target: { value: 50 } });
-
-    expect(brightnessInput).toHaveValue(50);
+    const temperatureInput = screen.getByLabelText(/temperature/i);
+    fireEvent.change(temperatureInput, { target: { value: 25 } });
+    expect(temperatureInput.value).toBe("25");
   });
 
-  test("calls updateDeviceSettings on button click", async () => {
-    updateDeviceSettings.mockResolvedValueOnce({ data: {} });
-
-    render(
-      <DeviceModal device={device} show={true} handleClose={mockHandleClose} />
-    );
-
-    const manageButton = screen.getByText(/Turn Off/i);
-    fireEvent.click(manageButton);
-
-    await waitFor(() =>
-      expect(updateDeviceSettings).toHaveBeenCalledWith(1, { status: false })
-    );
-  });
-
-  test("shows error message on update failure", async () => {
+  test("displays error alert when update fails", async () => {
     updateDeviceSettings.mockRejectedValueOnce(new Error("Update failed"));
+    render(<DeviceModal device={mockDevice} show={true} handleClose={handleClose} />);
+    
+    const updateButton = screen.getByText("Update");
+    fireEvent.click(updateButton);
+    
+    await waitFor(() => {
+      expect(screen.getByText("Failed to update device settings. Please try again.")).toBeInTheDocument();
+    });
+  });
 
-    render(
-      <DeviceModal device={device} show={true} handleClose={mockHandleClose} />
-    );
+  test("calls updateDeviceSettings with correct data on update", async () => {
+    updateDeviceSettings.mockResolvedValueOnce({});
+    render(<DeviceModal device={mockDevice} show={true} handleClose={handleClose} />);
 
-    const manageButton = screen.getByText(/Turn Off/i);
-    fireEvent.click(manageButton);
+    const updateButton = screen.getByText("Update");
+    fireEvent.click(updateButton);
 
     await waitFor(() => {
-      expect(
-        screen.getByText(/Failed to update device settings. Please try again./i)
-      ).toBeInTheDocument();
+      expect(updateDeviceSettings).toHaveBeenCalledWith(1, {
+        ...mockDevice,
+        status: true,
+        brightness: 50,
+        temperature: 20,
+        motionDetectionEnabled: true,
+      });
     });
   });
 });
