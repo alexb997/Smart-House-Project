@@ -16,7 +16,11 @@ import RoomCard from "./RoomCard";
 const RoomList = () => {
   const [rooms, setRooms] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [currentRoom, setCurrentRoom] = useState({ name: "" });
+  const [currentRoom, setCurrentRoom] = useState({
+    name: "",
+    userId: "",
+    devices: [],
+  });
   const [isEditing, setIsEditing] = useState(false);
   const userId = localStorage.getItem("userId");
 
@@ -24,6 +28,7 @@ const RoomList = () => {
 
   useEffect(() => {
     fetchRooms(userId);
+    setCurrentRoom({ name: "", userId: userId, devices: [] });
   }, [userId]);
 
   const fetchRooms = async (userId) => {
@@ -44,7 +49,7 @@ const RoomList = () => {
     }
   };
 
-  const handleShowModal = (room = { name: "" }) => {
+  const handleShowModal = (room = { name: "", userId: userId }) => {
     setCurrentRoom(room);
     setIsEditing(!!room.id);
     setShowModal(true);
@@ -58,7 +63,8 @@ const RoomList = () => {
       };
 
       if (isEditing) {
-        await instance.put(`/api/rooms/${currentRoom.id}`, roomData);
+        await instance.post("/api/rooms", currentRoom);
+        // await instance.put(`/api/rooms/${currentRoom.id}`, roomData);
       } else {
         await instance.post("/api/rooms", currentRoom);
       }

@@ -144,10 +144,13 @@ function RoomCard({ room, onManage, onListDevices }) {
 
           {lockDevice ? (
             <>
-              <p>Lock: {lockState ? "Locked" : "Unlocked"}</p>
-              <button onClick={toggleLock}>
-                {lockState ? "Unlock" : "Lock"}
-              </button>
+              <p>
+                Lock: {lockState ? "Locked" : "Unlocked"}{" "}
+                <CustomButton
+                  content={lockState ? "Unlock" : "Lock"}
+                  onClick={toggleLock}
+                ></CustomButton>
+              </p>
             </>
           ) : (
             <p>No locks available</p>
