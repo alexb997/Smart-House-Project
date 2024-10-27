@@ -16,7 +16,7 @@ const deviceTypes = {
   SENSOR: "SENSOR",
 };
 
-function RoomCard({ room, onManage, onListDevices }) {
+function RoomCard({ room, onListDevices }) {
   const thermometerDevice = room.devices.find(
     (device) => device.type === "THERMOSTAT" && device.temperature !== null
   );
@@ -169,13 +169,13 @@ function RoomCard({ room, onManage, onListDevices }) {
                 <CustomButton
                   content={lightState ? "On" : "Off"}
                   onClick={toggleLight}
+                  className={"card-button"}
                 ></CustomButton>
               </p>
             </>
           ) : (
             <p>No lights available</p>
           )}
-
           {lockDevice ? (
             <>
               <p>
@@ -183,13 +183,13 @@ function RoomCard({ room, onManage, onListDevices }) {
                 <CustomButton
                   content={lockState ? "Unlock" : "Lock"}
                   onClick={toggleLock}
+                  className={"card-button"}
                 ></CustomButton>
               </p>
             </>
           ) : (
             <p>No locks available</p>
           )}
-
           {cameraDevice ? (
             <>
               <p>
@@ -197,13 +197,13 @@ function RoomCard({ room, onManage, onListDevices }) {
                 <CustomButton
                   content={cameraState ? "Record" : "Stop"}
                   onClick={toggleCamera}
+                  className={"card-button"}
                 ></CustomButton>
               </p>
             </>
           ) : (
             <p>No cameras available</p>
           )}
-
           {sensorDevice ? (
             <>
               <p>
@@ -211,13 +211,13 @@ function RoomCard({ room, onManage, onListDevices }) {
                 <CustomButton
                   content={sensorState ? "Turn On" : "Turn Off"}
                   onClick={toggleSensor}
+                  className={"card-button"}
                 ></CustomButton>
               </p>
             </>
           ) : (
             <p>No sensors available</p>
           )}
-
           {doorbellDevice ? (
             <>
               <p>Doorbell available</p>
@@ -228,8 +228,16 @@ function RoomCard({ room, onManage, onListDevices }) {
         </Card.Body>
         <Card.Body>
           <div className="d-flex justify-content-around">
-            <CustomButton content={"Secure"} onClick={toggleSecurity} />
-            <CustomButton content={"List Devices"} onClick={onListDevices} />
+            <CustomButton
+              content={"Secure"}
+              className={"card-button"}
+              onClick={toggleSecurity}
+            />
+            <CustomButton
+              content={"List Devices"}
+              className={"card-button"}
+              onClick={onListDevices}
+            />
           </div>
         </Card.Body>
       </Card>

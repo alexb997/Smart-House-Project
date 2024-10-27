@@ -87,7 +87,7 @@ const RoomList = () => {
   };
 
   return (
-    <Container className="mt-4">
+    <Container className="mt-4" style={{ marginBottom: "10%" }}>
       <h2 style={{ color: "white" }} className=" text-center mb-4">
         Rooms
       </h2>

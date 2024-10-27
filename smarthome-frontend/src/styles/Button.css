@@ -18,3 +18,11 @@
   background-color: #45cdff;
   box-shadow: inset 5px 10px 10px rgba(0, 0, 0, 0.3);
 }
+
+.card-button {
+  padding-top: 4px !important;
+  padding-bottom: 4px !important;
+  padding-right: 8px !important;
+  padding-left: 8px !important ;
+  border-radius: 30% !important;
+}
