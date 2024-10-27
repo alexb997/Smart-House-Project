@@ -43,6 +43,10 @@ function RoomCard({ room, onManage, onListDevices }) {
   const [lockState, setLockState] = useState(
     lockDevice ? lockDevice.state : false
   );
+  const [cameraState, setCameraState] = useState(
+    cameraDevice ? cameraDevice.state : false
+  );
+
 
   const [isEditingTemp, setIsEditingTemp] = useState(false);
 
@@ -80,6 +84,16 @@ function RoomCard({ room, onManage, onListDevices }) {
   };
 
   const toggleLock = async () => {
+    try {
+      const newLockState = !lockState;
+      await controlDevice(lockDevice.id, newLockState);
+      setLockState(newLockState);
+    } catch (error) {
+      console.error("Error toggling lock:", error);
+    }
+  };
+
+  const toggleCamera = async () => {
     try {
       const newLockState = !lockState;
       await controlDevice(lockDevice.id, newLockState);
@@ -158,7 +172,13 @@ function RoomCard({ room, onManage, onListDevices }) {
 
           {cameraDevice ? (
             <>
-              <p>Camera available</p>
+              <p>
+                Camera: {cameraState ? "Stoped" : "Recording"}{" "}
+                <CustomButton
+                  content={cameraState ? "Record" : "Stop"}
+                  onClick={toggleLock}
+                ></CustomButton>
+              </p>
             </>
           ) : (
             <p>No cameras available</p>
@@ -174,7 +194,7 @@ function RoomCard({ room, onManage, onListDevices }) {
         </Card.Body>
         <Card.Body>
           <div className="d-flex justify-content-around">
-            <CustomButton content={"Manage"} onClick={onManage} />
+            <CustomButton content={"secure"} onClick={onManage} />
             <CustomButton content={"List Devices"} onClick={onListDevices} />
           </div>
         </Card.Body>

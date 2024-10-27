@@ -27,9 +27,6 @@ public class Device {
     @Column(nullable = true)
     private Integer temperature;
 
-    @Column(nullable = true)
-    private Boolean motionDetectionEnabled;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
     @JsonIgnore

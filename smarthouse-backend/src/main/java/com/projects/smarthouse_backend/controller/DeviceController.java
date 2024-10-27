@@ -98,9 +98,6 @@ public class DeviceController {
         if (updatedDevice.getTemperature() != null) {
             existingDevice.setTemperature(updatedDevice.getTemperature());
         }
-        if (updatedDevice.getMotionDetectionEnabled() != null) {
-            existingDevice.setMotionDetectionEnabled(updatedDevice.getMotionDetectionEnabled());
-        }
 
         Device savedDevice = deviceService.updateDevice(existingDevice);
         return ResponseEntity.ok(savedDevice);
