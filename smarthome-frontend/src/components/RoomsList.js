@@ -18,8 +18,7 @@ const RoomList = () => {
   const [showModal, setShowModal] = useState(false);
   const [currentRoom, setCurrentRoom] = useState({
     name: "",
-    userId: "",
-    devices: [],
+    userId: 1,
   });
   const [isEditing, setIsEditing] = useState(false);
   const userId = localStorage.getItem("userId");
@@ -28,7 +27,7 @@ const RoomList = () => {
 
   useEffect(() => {
     fetchRooms(userId);
-    setCurrentRoom({ name: "", userId: userId, devices: [] });
+    setCurrentRoom({ name: "" });
   }, [userId]);
 
   const fetchRooms = async (userId) => {
@@ -49,24 +48,22 @@ const RoomList = () => {
     }
   };
 
-  const handleShowModal = (room = { name: "", userId: userId }) => {
+  const handleShowModal = (room = { name: "" }) => {
     setCurrentRoom(room);
     setIsEditing(!!room.id);
     setShowModal(true);
   };
 
-  const handleSave = async (userId) => {
+  const handleSave = async () => {
     try {
       const roomData = {
         name: currentRoom.name,
-        userId: userId,
       };
 
       if (isEditing) {
-        await instance.post("/api/rooms", currentRoom);
-        // await instance.put(`/api/rooms/${currentRoom.id}`, roomData);
+        await instance.put(`/api/rooms/${currentRoom.id}`, roomData);
       } else {
-        await instance.post("/api/rooms", currentRoom);
+        await instance.post(`/api/rooms/${userId}`, currentRoom);
       }
 
       fetchRooms();

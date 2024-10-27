@@ -56,13 +56,11 @@ public class RoomController {
         }
     }
 
-    @PostMapping
-    public Room createRoom(@RequestBody Map<String, Object> requestData) {
+    @PostMapping("/{userId}")
+    public Room createRoom(@PathVariable Long userId,@RequestBody Map<String, Object> requestData) {
         String name = requestData.get("name").toString();
-        Long userId = Long.valueOf(requestData.get("userId").toString());
         Room room = new Room();
         room.setName(name);
-
         return roomService.saveRoom(room, userId);
     }
 
