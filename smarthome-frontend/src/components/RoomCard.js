@@ -30,6 +30,9 @@ function RoomCard({ room, onManage, onListDevices }) {
   const doorbellDevice = room.devices.find(
     (device) => device.type === deviceTypes.DOORBELL
   );
+  const sensorDevice = room.devices.find(
+    (device) => device.type === deviceTypes.SENSOR
+  );
   const cameraDevice = room.devices.find(
     (device) => device.type === deviceTypes.CAMERA
   );
@@ -46,7 +49,9 @@ function RoomCard({ room, onManage, onListDevices }) {
   const [cameraState, setCameraState] = useState(
     cameraDevice ? cameraDevice.state : false
   );
-
+  const [sensorState, setSensorState] = useState(
+    sensorDevice ? sensorDevice.state : false
+  );
 
   const [isEditingTemp, setIsEditingTemp] = useState(false);
 
@@ -95,12 +100,27 @@ function RoomCard({ room, onManage, onListDevices }) {
 
   const toggleCamera = async () => {
     try {
-      const newLockState = !lockState;
-      await controlDevice(lockDevice.id, newLockState);
-      setLockState(newLockState);
+      const newCameraState = !cameraState;
+      await controlDevice(cameraDevice.id, newCameraState);
+      setCameraState(newCameraState);
     } catch (error) {
-      console.error("Error toggling lock:", error);
+      console.error("Error toggling camera:", error);
     }
+  };
+
+  const toggleSensor = async () => {
+    try {
+      const newSensorState = !sensorState;
+      await controlDevice(sensorDevice.id, newSensorState);
+      setSensorState(newSensorState);
+    } catch (error) {
+      console.error("Error toggling camera:", error);
+    }
+  };
+
+  const toggleSecurity = () => {
+    toggleCamera();
+    toggleSensor();
   };
 
   return (
@@ -176,12 +196,26 @@ function RoomCard({ room, onManage, onListDevices }) {
                 Camera: {cameraState ? "Stoped" : "Recording"}{" "}
                 <CustomButton
                   content={cameraState ? "Record" : "Stop"}
-                  onClick={toggleLock}
+                  onClick={toggleCamera}
                 ></CustomButton>
               </p>
             </>
           ) : (
             <p>No cameras available</p>
+          )}
+
+          {sensorDevice ? (
+            <>
+              <p>
+                Sensors: {sensorState ? "Off" : "On"}{" "}
+                <CustomButton
+                  content={sensorState ? "Turn On" : "Turn Off"}
+                  onClick={toggleSensor}
+                ></CustomButton>
+              </p>
+            </>
+          ) : (
+            <p>No sensors available</p>
           )}
 
           {doorbellDevice ? (
@@ -194,7 +228,7 @@ function RoomCard({ room, onManage, onListDevices }) {
         </Card.Body>
         <Card.Body>
           <div className="d-flex justify-content-around">
-            <CustomButton content={"secure"} onClick={onManage} />
+            <CustomButton content={"Secure"} onClick={toggleSecurity} />
             <CustomButton content={"List Devices"} onClick={onListDevices} />
           </div>
         </Card.Body>
