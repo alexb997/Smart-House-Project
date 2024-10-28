@@ -1,10 +1,6 @@
 import React, { useState } from "react";
 import { Col, Card, Form } from "react-bootstrap";
-import {
-  controlDevice,
-  updateDeviceTemperature,  updateDeviceSettings,
-} from "../service/deviceService";
-
+import { updateDeviceSettings } from "../service/deviceService";
 import CustomButton from "./CustomButton";
 
 const deviceTypes = {
@@ -20,44 +16,22 @@ function RoomCard({ room, onListDevices }) {
   const thermometerDevice = room.devices.find(
     (device) => device.type === "THERMOSTAT" && device.temperature !== null
   );
-
-  const lightDevice = room.devices.find(
-    (device) => device.type === deviceTypes.LIGHT
-  );
-  const lockDevice = room.devices.find(
-    (device) => device.type === deviceTypes.LOCK
-  );
-  const doorbellDevice = room.devices.find(
-    (device) => device.type === deviceTypes.DOORBELL
-  );
-  const sensorDevice = room.devices.find(
-    (device) => device.type === deviceTypes.SENSOR
-  );
-  const cameraDevice = room.devices.find(
-    (device) => device.type === deviceTypes.CAMERA
-  );
+  const lightDevice = room.devices.find((device) => device.type === deviceTypes.LIGHT);
+  const lockDevice = room.devices.find((device) => device.type === deviceTypes.LOCK);
+  const doorbellDevice = room.devices.find((device) => device.type === deviceTypes.DOORBELL);
+  const sensorDevice = room.devices.find((device) => device.type === deviceTypes.SENSOR);
+  const cameraDevice = room.devices.find((device) => device.type === deviceTypes.CAMERA);
 
   const [temperature, setTemperature] = useState(
     thermometerDevice ? thermometerDevice.temperature : ""
   );
-  const [lightState, setLightState] = useState(
-    lightDevice ? lightDevice.state : false
-  );
-  const [lockState, setLockState] = useState(
-    lockDevice ? lockDevice.state : false
-  );
-  const [cameraState, setCameraState] = useState(
-    cameraDevice ? cameraDevice.state : false
-  );
-  const [sensorState, setSensorState] = useState(
-    sensorDevice ? sensorDevice.state : false
-  );
-
+  const [lightState, setLightState] = useState(lightDevice ? lightDevice.state : false);
+  const [lockState, setLockState] = useState(lockDevice ? lockDevice.state : false);
+  const [cameraState, setCameraState] = useState(cameraDevice ? cameraDevice.state : false);
+  const [sensorState, setSensorState] = useState(sensorDevice ? sensorDevice.state : false);
   const [isEditingTemp, setIsEditingTemp] = useState(false);
 
-  const handleTemperatureChange = (e) => {
-    setTemperature(e.target.value);
-  };
+  const handleTemperatureChange = (e) => setTemperature(e.target.value);
 
   const saveTemperature = async () => {
     if (thermometerDevice) {
@@ -99,12 +73,7 @@ function RoomCard({ room, onListDevices }) {
 
   return (
     <Col md={3} className="mb-4">
-      <Card
-        style={{
-          backgroundColor: "#C5DBDD",
-          borderRadius: "40px",
-        }}
-      >
+      <Card style={{ backgroundColor: "#C5DBDD", borderRadius: "40px" }}>
         <Card.Body>
           <Card.Title className="text-center">{room.name}</Card.Title>
           {thermometerDevice ? (
@@ -123,10 +92,7 @@ function RoomCard({ room, onListDevices }) {
                       onBlur={saveTemperature}
                     />
                   ) : (
-                    <p
-                      onClick={handleTemperatureClick}
-                      style={{ cursor: "pointer" }}
-                    >
+                    <p onClick={handleTemperatureClick} style={{ cursor: "pointer" }}>
                       {temperature}°C
                     </p>
                   )}
@@ -137,81 +103,59 @@ function RoomCard({ room, onListDevices }) {
             <p>No temperature sensor available</p>
           )}
           {lightDevice ? (
-            <>
-              <p>
-                Light:{" "}
-                <CustomButton
-                  content={lightState ? "On" : "Off"}
-                  onClick={toggleLight}
-                  className={"card-button"}
-                ></CustomButton>
-              </p>
-            </>
+            <p>
+              Light:{" "}
+              <CustomButton
+                content={lightState ? "On" : "Off"}
+                onClick={toggleLight}
+                className={"card-button"}
+              />
+            </p>
           ) : (
             <p>No lights available</p>
           )}
           {lockDevice ? (
-            <>
-              <p>
-                Lock: {lockState ? "Locked" : "Unlocked"}{" "}
-                <CustomButton
-                  content={lockState ? "Unlock" : "Lock"}
-                  onClick={toggleLock}
-                  className={"card-button"}
-                ></CustomButton>
-              </p>
-            </>
+            <p>
+              Lock: {lockState ? "Locked" : "Unlocked"}{" "}
+              <CustomButton
+                content={lockState ? "Unlock" : "Lock"}
+                onClick={toggleLock}
+                className={"card-button"}
+              />
+            </p>
           ) : (
             <p>No locks available</p>
           )}
           {cameraDevice ? (
-            <>
-              <p>
-                Camera: {cameraState ? "Stoped" : "Recording"}{" "}
-                <CustomButton
-                  content={cameraState ? "Record" : "Stop"}
-                  onClick={toggleCamera}
-                  className={"card-button"}
-                ></CustomButton>
-              </p>
-            </>
+            <p>
+              Camera: {cameraState ? "Stopped" : "Recording"}{" "}
+              <CustomButton
+                content={cameraState ? "Record" : "Stop"}
+                onClick={toggleCamera}
+                className={"card-button"}
+              />
+            </p>
           ) : (
             <p>No cameras available</p>
           )}
           {sensorDevice ? (
-            <>
-              <p>
-                Sensors: {sensorState ? "Off" : "On"}{" "}
-                <CustomButton
-                  content={sensorState ? "Turn On" : "Turn Off"}
-                  onClick={toggleSensor}
-                  className={"card-button"}
-                ></CustomButton>
-              </p>
-            </>
+            <p>
+              Sensors: {sensorState ? "Off" : "On"}{" "}
+              <CustomButton
+                content={sensorState ? "Turn On" : "Turn Off"}
+                onClick={toggleSensor}
+                className={"card-button"}
+              />
+            </p>
           ) : (
             <p>No sensors available</p>
           )}
-          {doorbellDevice ? (
-            <>
-              <p>Doorbell available</p>
-            </>
-          ) : (
-            <p>No doorbell available</p>
-          )}
+          {doorbellDevice && <p>Doorbell available</p>}
         </Card.Body>
         <Card.Body>
           <div className="d-flex justify-content-around">
-            <CustomButton
-              content={"Secure"}
-              className={"card-button"}
-              onClick={toggleSecurity}
-            />
-            <CustomButton
-              content={"List Devices"}
-              className={"card-button"}
-              onClick={onListDevices}
-            />
+            <CustomButton content={"Secure"} className={"card-button"} onClick={toggleSecurity} />
+            <CustomButton content={"List Devices"} className={"card-button"} onClick={onListDevices} />
           </div>
         </Card.Body>
       </Card>

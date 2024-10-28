@@ -20,16 +20,24 @@ public class DeviceController {
 
     @Autowired
     private DeviceService deviceService;
-
     @Autowired
     private RoomService roomService;
-
     @Autowired
     private UserService userService;
 
     private Device getDeviceOrThrow(Long deviceId) {
         return deviceService.getDeviceById(deviceId)
                 .orElseThrow(() -> new RuntimeException("Device not found: " + deviceId));
+    }
+
+    private Room getRoomOrThrow(Long roomId) {
+        return roomService.getRoomById(roomId)
+                .orElseThrow(() -> new RuntimeException("Room not found: " + roomId));
+    }
+
+    private User getUserOrThrow(Long userId) {
+        return userService.getUserById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found: " + userId));
     }
 
     @GetMapping
@@ -86,21 +94,15 @@ public class DeviceController {
     public ResponseEntity<Device> updateDevice(@PathVariable Long deviceId, @RequestBody Map<String, Object> updates) {
         Device existingDevice = getDeviceOrThrow(deviceId);
 
-        if (updates.containsKey("name")) {
-            existingDevice.setName(updates.get("name").toString());
-        }
-        if (updates.containsKey("type")) {
-            existingDevice.setType(DeviceType.valueOf(updates.get("type").toString()));
-        }
-        if (updates.containsKey("status")) {
-            existingDevice.setStatus(Boolean.parseBoolean(updates.get("status").toString()));
-        }
-        if (updates.containsKey("brightness")) {
-            existingDevice.setBrightness(Integer.valueOf(updates.get("brightness").toString()));
-        }
-        if (updates.containsKey("temperature")) {
-            existingDevice.setTemperature(Integer.valueOf(updates.get("temperature").toString()));
-        }
+        updates.forEach((key, value) -> {
+            switch (key) {
+                case "name" -> existingDevice.setName(value.toString());
+                case "type" -> existingDevice.setType(DeviceType.valueOf(value.toString()));
+                case "status" -> existingDevice.setStatus(Boolean.parseBoolean(value.toString()));
+                case "brightness" -> existingDevice.setBrightness(Integer.valueOf(value.toString()));
+                case "temperature" -> existingDevice.setTemperature(Integer.valueOf(value.toString()));
+            }
+        });
 
         Device savedDevice = deviceService.updateDevice(existingDevice);
         return ResponseEntity.ok(savedDevice);
@@ -109,31 +111,29 @@ public class DeviceController {
     @PostMapping("/{deviceId}/assign-room/{roomId}")
     public ResponseEntity<Device> assignDeviceToRoom(@PathVariable Long deviceId, @PathVariable Long roomId) {
         Device device = getDeviceOrThrow(deviceId);
-        Room room = roomService.getRoomById(roomId)
-                .orElseThrow(() -> new RuntimeException("Room not found " + roomId));
+        device.setRoom(getRoomOrThrow(roomId));
 
-        device.setRoom(room);
         Device updatedDevice = deviceService.updateDevice(device);
         return ResponseEntity.ok(updatedDevice);
     }
 
     @PutMapping("/{deviceId}/control")
     public ResponseEntity<Device> controlDevice(@PathVariable Long deviceId, @RequestBody Map<String, Boolean> action) {
-        Device device = getDeviceOrThrow(deviceId);
         Boolean turnOn = action.get("status");
-
-        if (turnOn != null) {
-            device.setStatus(turnOn);
-            Device updatedDevice = deviceService.updateDevice(device);
-            return ResponseEntity.ok(updatedDevice);
-        } else {
+        if (turnOn == null) {
             return ResponseEntity.badRequest().build();
         }
+
+        Device device = getDeviceOrThrow(deviceId);
+        device.setStatus(turnOn);
+
+        Device updatedDevice = deviceService.updateDevice(device);
+        return ResponseEntity.ok(updatedDevice);
     }
 
     @DeleteMapping("/{deviceId}")
     public ResponseEntity<Void> deleteDevice(@PathVariable Long deviceId) {
-        Device device = getDeviceOrThrow(deviceId);
+        getDeviceOrThrow(deviceId);
         deviceService.deleteDevice(deviceId);
         return ResponseEntity.noContent().build();
     }
