@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Col, Card, Form } from "react-bootstrap";
 import {
   controlDevice,
-  updateDeviceTemperature,
+  updateDeviceTemperature,  updateDeviceSettings,
 } from "../service/deviceService";
 
 import CustomButton from "./CustomButton";
@@ -112,7 +112,7 @@ function RoomCard({ room, onListDevices }) {
               <p>
                 Room temperature:
                 <span>
-                  {isEditing ? (
+                  {isEditingTemp ? (
                     <Form.Control
                       type="number"
                       value={temperature}

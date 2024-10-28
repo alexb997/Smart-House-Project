@@ -83,20 +83,23 @@ public class DeviceController {
     }
 
     @PutMapping("/{deviceId}")
-    public ResponseEntity<Device> updateDevice(@PathVariable Long deviceId, @RequestBody Device updatedDevice) {
+    public ResponseEntity<Device> updateDevice(@PathVariable Long deviceId, @RequestBody Map<String, Object> updates) {
         Device existingDevice = getDeviceOrThrow(deviceId);
 
-        if (updatedDevice.getName() != null) {
-            existingDevice.setName(updatedDevice.getName());
+        if (updates.containsKey("name")) {
+            existingDevice.setName(updates.get("name").toString());
         }
-        if (updatedDevice.getType() != null) {
-            existingDevice.setType(updatedDevice.getType());
+        if (updates.containsKey("type")) {
+            existingDevice.setType(DeviceType.valueOf(updates.get("type").toString()));
         }
-        if (updatedDevice.getBrightness() != null) {
-            existingDevice.setBrightness(updatedDevice.getBrightness());
+        if (updates.containsKey("status")) {
+            existingDevice.setStatus(Boolean.parseBoolean(updates.get("status").toString()));
         }
-        if (updatedDevice.getTemperature() != null) {
-            existingDevice.setTemperature(updatedDevice.getTemperature());
+        if (updates.containsKey("brightness")) {
+            existingDevice.setBrightness(Integer.valueOf(updates.get("brightness").toString()));
+        }
+        if (updates.containsKey("temperature")) {
+            existingDevice.setTemperature(Integer.valueOf(updates.get("temperature").toString()));
         }
 
         Device savedDevice = deviceService.updateDevice(existingDevice);
