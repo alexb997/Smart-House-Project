@@ -55,72 +55,46 @@ function RoomCard({ room, onListDevices }) {
 
   const [isEditingTemp, setIsEditingTemp] = useState(false);
 
-  const [isEditing, setIsEditing] = useState(false);
-
   const handleTemperatureChange = (e) => {
     setTemperature(e.target.value);
   };
 
   const saveTemperature = async () => {
-    try {
-      await updateDeviceTemperature(thermometerDevice.id, temperature);
-      setIsEditing(false);
-    } catch (error) {
-      console.error("Error updating temperature:", error);
+    if (thermometerDevice) {
+      try {
+        await updateDeviceSettings(thermometerDevice.id, { temperature });
+        setIsEditingTemp(false);
+      } catch (error) {
+        console.error("Error updating temperature:", error);
+      }
     }
   };
 
   const handleTemperatureClick = () => {
-    if (isEditing) {
+    if (isEditingTemp) {
       saveTemperature();
     } else {
-      setIsEditing(true);
+      setIsEditingTemp(true);
     }
   };
 
-  const toggleLight = async () => {
+  const toggleDeviceState = async (device, newState, setState) => {
     try {
-      const newLightState = !lightState;
-      await controlDevice(lightDevice.id, newLightState);
-      setLightState(newLightState);
+      await updateDeviceSettings(device.id, { state: newState });
+      setState(newState);
     } catch (error) {
-      console.error("Error toggling light:", error);
+      console.error(`Error toggling ${device.type.toLowerCase()}:`, error);
     }
   };
 
-  const toggleLock = async () => {
-    try {
-      const newLockState = !lockState;
-      await controlDevice(lockDevice.id, newLockState);
-      setLockState(newLockState);
-    } catch (error) {
-      console.error("Error toggling lock:", error);
-    }
-  };
-
-  const toggleCamera = async () => {
-    try {
-      const newCameraState = !cameraState;
-      await controlDevice(cameraDevice.id, newCameraState);
-      setCameraState(newCameraState);
-    } catch (error) {
-      console.error("Error toggling camera:", error);
-    }
-  };
-
-  const toggleSensor = async () => {
-    try {
-      const newSensorState = !sensorState;
-      await controlDevice(sensorDevice.id, newSensorState);
-      setSensorState(newSensorState);
-    } catch (error) {
-      console.error("Error toggling camera:", error);
-    }
-  };
+  const toggleLight = () => toggleDeviceState(lightDevice, !lightState, setLightState);
+  const toggleLock = () => toggleDeviceState(lockDevice, !lockState, setLockState);
+  const toggleCamera = () => toggleDeviceState(cameraDevice, !cameraState, setCameraState);
+  const toggleSensor = () => toggleDeviceState(sensorDevice, !sensorState, setSensorState);
 
   const toggleSecurity = () => {
-    toggleCamera();
-    toggleSensor();
+    if (cameraDevice) toggleCamera();
+    if (sensorDevice) toggleSensor();
   };
 
   return (
