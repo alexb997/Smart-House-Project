@@ -41,13 +41,27 @@ const DeviceModal = ({ device, show, handleClose }) => {
         ? settings.motionDetectionEnabled
         : null;
       device.status = settings.status;
+      
       await updateDeviceSettings(device.id, device);
+      logDeviceUpdate();
       handleClose();
     } catch (err) {
       setError("Failed to update device settings. Please try again.");
     } finally {
       setLoading(false);
     }
+  };
+
+  const logDeviceUpdate = () => {
+    const log = {
+      deviceName: device.name,
+      date: new Date().toISOString(),
+      message: "Device settings updated successfully",
+      status: "Update"
+    };
+    
+    console.log("Device Update Log:", logEntry);
+    // Optionally, you can call a backend logging API or save to local storage
   };
 
   return (

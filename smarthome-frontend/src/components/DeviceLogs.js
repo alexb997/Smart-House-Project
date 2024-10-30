@@ -4,11 +4,12 @@ import { getDeviceLogs } from "../service/deviceService";
 
 const DeviceLogs = () => {
   const [logs, setLogs] = useState([]);
+  const username = localStorage.getItem("username");
 
   useEffect(() => {
     const fetchLogs = async () => {
       try {
-        const response = await getDeviceLogs();
+        const response = await getDeviceLogs(username);
         setLogs(response.data);
       } catch (error) {
         console.error("Error fetching logs:", error);
@@ -32,8 +33,8 @@ const DeviceLogs = () => {
         {logs.map((log, index) => (
           <tr key={index}>
             <td>{log.deviceName}</td>
-            <td>{log.action}</td>
-            <td>{log.time}</td>
+            <td>{log.message}</td>
+            <td>{log.date}</td>
             <td>{log.status}</td>
           </tr>
         ))}
