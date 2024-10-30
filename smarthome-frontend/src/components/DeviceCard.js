@@ -42,7 +42,6 @@ DeviceCard.propTypes = {
     status: PropTypes.bool.isRequired,
     brightness: PropTypes.number,
     temperature: PropTypes.number,
-    motionDetectionEnabled: PropTypes.bool,
   }).isRequired,
   onClick: PropTypes.func,
 };

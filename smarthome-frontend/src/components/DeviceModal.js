@@ -4,16 +4,17 @@ import { updateDeviceSettings } from "../service/deviceService";
 import PropTypes from "prop-types";
 import TypeSetting from "./TypeSetting";
 import CustomButton from "./CustomButton";
+import { createDeviceLog } from "../service/logService";
 
 const DeviceModal = ({ device, show, handleClose }) => {
   const [settings, setSettings] = useState({
-    brightness: device.brightness || 0,
-    temperature: device.temperature || 0,
-    motionDetectionEnabled: device.motionDetectionEnabled || false,
+    brightness: device.brightness || null,
+    temperature: device.temperature || null,
     status: device.status,
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const username = localStorage.getItem("username");
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -33,17 +34,30 @@ const DeviceModal = ({ device, show, handleClose }) => {
   const handleUpdateDevice = async () => {
     setLoading(true);
     setError(null);
+    const originalDevice = { ...device };
     try {
-      device.temperature =
-        settings.temperature > 0 ? settings.temperature : null;
-      device.brightness = settings.brightness > 0 ? settings.brightness : null;
-      device.motionDetectionEnabled = settings.motionDetectionEnabled
-        ? settings.motionDetectionEnabled
-        : null;
-      device.status = settings.status;
-      
-      await updateDeviceSettings(device.id, device);
-      logDeviceUpdate();
+      let temperature, brightness, status;
+      if (settings.temperature > 0) {
+        device.temperature = settings.temperature;
+        temperature = settings.temperature;
+        await updateDeviceSettings(device.id, { temperature });
+      } else {
+        device.temperature = null;
+      }
+      if (settings.brightness > 0) {
+        device.brightness = settings.brightness;
+        brightness = settings.brightness;
+        await updateDeviceSettings(device.id, { brightness });
+      } else {
+        device.brightness = null;
+      }
+      if (settings.status != device.status) {
+        device.status = settings.status;
+        status = settings.status;
+        await updateDeviceSettings(device.id, { status });
+      }
+
+      logDeviceUpdate(originalDevice, settings);
       handleClose();
     } catch (err) {
       setError("Failed to update device settings. Please try again.");
@@ -52,16 +66,45 @@ const DeviceModal = ({ device, show, handleClose }) => {
     }
   };
 
-  const logDeviceUpdate = () => {
+  const getChanges = (original, updated) => {
+    const changes = [];
+    for (const key in updated) {
+      if (original[key] !== updated[key]) {
+        changes.push({
+          field: key,
+          oldValue: original[key],
+          newValue: updated[key],
+        });
+      }
+    }
+    return changes;
+  };
+
+  const logDeviceUpdate = async (originalDevice, updatedSettings) => {
+    const changes = getChanges(originalDevice, updatedSettings);
+    if (changes.length === 0) return;
+    const changeMessages = changes
+      .map(
+        (change) =>
+          `Updated ${change.field} from ${change.oldValue ?? "null"} to ${
+            change.newValue
+          }`
+      )
+      .join(", ");
     const log = {
       deviceName: device.name,
       date: new Date().toISOString(),
-      message: "Device settings updated successfully",
-      status: "Update"
+      message: changeMessages,
+      status: "Update",
+      username: username,
     };
-    
-    console.log("Device Update Log:", logEntry);
-    // Optionally, you can call a backend logging API or save to local storage
+
+    console.log("Device Update Log:", log);
+    try {
+      await createDeviceLog(log);
+    } catch (error) {
+      console.error("Failed to send log:", error);
+    }
   };
 
   return (
@@ -125,7 +168,6 @@ DeviceModal.propTypes = {
     status: PropTypes.bool.isRequired,
     brightness: PropTypes.number,
     temperature: PropTypes.number,
-    motionDetectionEnabled: PropTypes.bool,
   }).isRequired,
   show: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,

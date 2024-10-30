@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Table } from "react-bootstrap";
-import { getDeviceLogs } from "../service/deviceService";
+import { getDeviceLogs } from "../service/logService";
 
 const DeviceLogs = () => {
   const [logs, setLogs] = useState([]);

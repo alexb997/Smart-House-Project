@@ -6,12 +6,7 @@ function DeviceDetails({ device }) {
   else if (device.temperature) {
     return <Card.Text>Temperature: {device.temperature}°C</Card.Text>;
   } else {
-    return (
-      <Card.Text>
-        Motion Detection:{" "}
-        {device.motionDetectionEnabled ? "Enabled" : "Disabled"}
-      </Card.Text>
-    );
+    return <></>;
   }
 }
 
