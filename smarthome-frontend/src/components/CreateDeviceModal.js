@@ -2,6 +2,8 @@ import React, { useState, useCallback } from "react";
 import { Modal, Button, Form, Alert } from "react-bootstrap";
 import { createDevice } from "../service/deviceService";
 
+const DEVICE_TYPES = ["LIGHT", "THERMOSTAT", "CAMERA", "DOORBELL", "LOCK", "SENSOR"];
+
 const CreateDeviceModal = ({ show, handleClose, roomId, userId }) => {
   const [deviceData, setDeviceData] = useState({
     name: "",
@@ -11,6 +13,7 @@ const CreateDeviceModal = ({ show, handleClose, roomId, userId }) => {
     temperature: 0,
   });
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = useCallback((e) => {
     const { name, value, type, checked } = e.target;
@@ -21,6 +24,13 @@ const CreateDeviceModal = ({ show, handleClose, roomId, userId }) => {
   }, []);
 
   const handleSubmit = useCallback(async () => {
+    if (!deviceData.name.trim()) {
+      setError("Device name is required.");
+      return;
+    }
+    setError(null);
+    setIsLoading(true);
+
     const { name, type, status, brightness, temperature } = deviceData;
     const newDevice = {
       name,
@@ -36,6 +46,8 @@ const CreateDeviceModal = ({ show, handleClose, roomId, userId }) => {
     } catch (err) {
       setError("Failed to create device. Please try again.");
       console.error(err);
+    } finally {
+      setIsLoading(false);
     }
   }, [deviceData, roomId, userId, handleClose]);
 
@@ -66,13 +78,11 @@ const CreateDeviceModal = ({ show, handleClose, roomId, userId }) => {
               value={deviceData.type}
               onChange={handleInputChange}
             >
-              {["LIGHT", "THERMOSTAT", "CAMERA", "DOORBELL", "LOCK", "SENSOR"].map(
-                (deviceType) => (
-                  <option key={deviceType} value={deviceType}>
-                    {deviceType.charAt(0) + deviceType.slice(1).toLowerCase()}
-                  </option>
-                )
-              )}
+              {DEVICE_TYPES.map((deviceType) => (
+                <option key={deviceType} value={deviceType}>
+                  {deviceType.charAt(0) + deviceType.slice(1).toLowerCase()}
+                </option>
+              ))}
             </Form.Control>
           </Form.Group>
 
@@ -116,11 +126,11 @@ const CreateDeviceModal = ({ show, handleClose, roomId, userId }) => {
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
+        <Button variant="secondary" onClick={handleClose} disabled={isLoading}>
           Close
         </Button>
-        <Button variant="primary" onClick={handleSubmit}>
-          Create Device
+        <Button variant="primary" onClick={handleSubmit} disabled={isLoading || !deviceData.name.trim()}>
+          {isLoading ? "Creating..." : "Create Device"}
         </Button>
       </Modal.Footer>
     </Modal>

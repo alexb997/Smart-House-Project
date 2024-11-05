@@ -4,9 +4,7 @@ import com.projects.smarthouse_backend.model.Device;
 import com.projects.smarthouse_backend.model.Room;
 import com.projects.smarthouse_backend.model.User;
 import com.projects.smarthouse_backend.repository.RoomRepository;
-import com.projects.smarthouse_backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

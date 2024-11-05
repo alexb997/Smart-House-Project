@@ -3,22 +3,22 @@ package com.projects.smarthouse_backend.service;
 import com.projects.smarthouse_backend.model.Log;
 import com.projects.smarthouse_backend.repository.LogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class LogService {
     @Autowired
     private LogRepository logRepository;
 
-    public List<Log> getAllLogs() {
-        return logRepository.findAll();
+    public Page<Log> getAllLogs(Pageable pageable) {
+        return logRepository.findAll(pageable);
     }
 
-    public List<Log> getLogsByUsername(String username) {
-        return logRepository.findByUsername(username);
+    public Page<Log> getLogsByUsername(String username, Pageable pageable) {
+        return logRepository.findByUsername(username, pageable);
     }
 
     public Log saveLog(Log log) {
