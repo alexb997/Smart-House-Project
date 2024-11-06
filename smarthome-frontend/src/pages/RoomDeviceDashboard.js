@@ -12,9 +12,10 @@ const RoomDeviceDashboard = () => {
   const location = useLocation();
   const roomId = location.state?.roomId;
   const userId = Number(localStorage.getItem("userId"));
-  const [modalOpen, setModalOpen] = useState(false);
+
   const [devices, setDevices] = useState([]);
   const [selectedDevice, setSelectedDevice] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
   const [createModalOpen, setCreateModalOpen] = useState(false);
 
   useEffect(() => {
@@ -26,41 +27,31 @@ const RoomDeviceDashboard = () => {
         console.error("Error fetching devices:", error);
       }
     };
-    fetchDevices();
-  }, [roomName, roomId]);
+    if (roomId) fetchDevices();
+  }, [roomId]);
 
   const handleOpenModal = (device) => {
     setSelectedDevice(device);
-    setModalOpen(!modalOpen);
+    setModalOpen(true);
   };
 
   const handleCloseModal = () => {
-    setModalOpen(!modalOpen);
+    setModalOpen(false);
     setSelectedDevice(null);
   };
 
   const toggleCreateModal = () => {
-    setCreateModalOpen(!createModalOpen);
+    setCreateModalOpen((prev) => !prev);
   };
 
   return (
     <Container>
       <h2 style={{ color: "white" }}>Devices in {roomName}</h2>
-      <CustomButton
-        content="Add new device"
-        onClick={toggleCreateModal}
-      ></CustomButton>
-      <p></p>
-
+      <CustomButton content="Add new device" onClick={toggleCreateModal} />
       <Row>
         {devices.map((device) => (
           <Col xs={12} sm={6} md={3} key={device.id}>
-            <DeviceCard
-              device={device}
-              onClick={() => {
-                handleOpenModal(device);
-              }}
-            />
+            <DeviceCard device={device} onClick={() => handleOpenModal(device)} />
           </Col>
         ))}
       </Row>

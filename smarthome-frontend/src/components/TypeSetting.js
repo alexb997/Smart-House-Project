@@ -31,18 +31,6 @@ function TypeSetting({ device, settings, handleInputChange }) {
         />
       </Form.Group>
     );
-  } else {
-    return (
-      <Form.Group controlId="motionDetection">
-        <Form.Check
-          type="switch"
-          name="motionDetectionEnabled"
-          label={`Motion Detection: ${settings.motionDetectionEnabled ? "Enabled" : "Disabled"}`}
-          checked={settings.motionDetectionEnabled}
-          onChange={handleInputChange}
-        />
-      </Form.Group>
-    );
   }
 }
 

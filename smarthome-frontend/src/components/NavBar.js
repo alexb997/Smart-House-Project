@@ -41,12 +41,6 @@ const NavbarComponent = () => {
             <Nav.Link className="custom-nav-link" as={Link} to="/logs">
               Device Logs
             </Nav.Link>
-            <Nav.Link className="custom-nav-link" as={Link} to="/settings">
-              System Settings
-            </Nav.Link>
-            <Nav.Link className="custom-nav-link" as={Link} to="/rooms">
-              Rooms
-            </Nav.Link>
           </Nav>
           <Nav className="ms-auto">
             {username ? (
