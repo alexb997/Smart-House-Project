@@ -1,8 +1,16 @@
 import React, { useState, useCallback } from "react";
 import { Modal, Button, Form, Alert } from "react-bootstrap";
 import { createDevice } from "../service/deviceService";
+import { createDeviceLog } from "../service/logService";
 
-const DEVICE_TYPES = ["LIGHT", "THERMOSTAT", "CAMERA", "DOORBELL", "LOCK", "SENSOR"];
+const DEVICE_TYPES = [
+  "LIGHT",
+  "THERMOSTAT",
+  "CAMERA",
+  "DOORBELL",
+  "LOCK",
+  "SENSOR",
+];
 
 const CreateDeviceModal = ({ show, handleClose, roomId, userId }) => {
   const [deviceData, setDeviceData] = useState({
@@ -13,6 +21,7 @@ const CreateDeviceModal = ({ show, handleClose, roomId, userId }) => {
     temperature: 0,
   });
   const [error, setError] = useState(null);
+  const username = localStorage.getItem("username");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = useCallback((e) => {
@@ -39,8 +48,17 @@ const CreateDeviceModal = ({ show, handleClose, roomId, userId }) => {
       brightness: type === "LIGHT" ? brightness : null,
       temperature: type === "THERMOSTAT" ? temperature : null,
     };
+    const log = {
+      deviceName: newDevice.name,
+      date: new Date().toISOString(),
+      message: "Added new device",
+      status: "ADD",
+      username: username,
+    };
 
+    console.table(log);
     try {
+      await createDeviceLog(log);
       await createDevice({ device: newDevice, roomId, userId });
       handleClose();
     } catch (err) {
@@ -129,7 +147,11 @@ const CreateDeviceModal = ({ show, handleClose, roomId, userId }) => {
         <Button variant="secondary" onClick={handleClose} disabled={isLoading}>
           Close
         </Button>
-        <Button variant="primary" onClick={handleSubmit} disabled={isLoading || !deviceData.name.trim()}>
+        <Button
+          variant="primary"
+          onClick={handleSubmit}
+          disabled={isLoading || !deviceData.name.trim()}
+        >
           {isLoading ? "Creating..." : "Create Device"}
         </Button>
       </Modal.Footer>

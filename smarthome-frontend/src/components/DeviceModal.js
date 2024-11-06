@@ -99,7 +99,7 @@ const DeviceModal = ({ device, show, handleClose }) => {
       username: username,
     };
 
-    console.log("Device Update Log:", log);
+    console.table(log);
     try {
       await createDeviceLog(log);
     } catch (error) {
