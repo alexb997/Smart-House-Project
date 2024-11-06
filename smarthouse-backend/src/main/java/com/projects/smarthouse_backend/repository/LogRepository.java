@@ -10,5 +10,5 @@ import java.util.List;
 
 @Repository
 public interface LogRepository extends JpaRepository<Log, Long> {
-    Page<Log> findByUsernameOrderByTimestampDesc(String username, Pageable pageable);
+    Page<Log> findByUsernameOrderByDateDesc(String username, Pageable pageable);
 }

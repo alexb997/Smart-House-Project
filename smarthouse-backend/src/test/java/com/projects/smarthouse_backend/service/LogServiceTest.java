@@ -62,7 +62,7 @@ class LogServiceTest {
         Pageable pageable = PageRequest.of(0, 10);
         Page<Log> page = new PageImpl<>(Arrays.asList(log1));
 
-        when(logRepository.findByUsernameOrderByTimestampDesc("user1", pageable)).thenReturn(page);
+        when(logRepository.findByUsernameOrderByDateDesc("user1", pageable)).thenReturn(page);
 
         Page<Log> result = logService.getLogsByUsername("user1", pageable);
 
