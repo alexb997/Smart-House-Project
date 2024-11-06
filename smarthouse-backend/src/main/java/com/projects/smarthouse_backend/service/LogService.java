@@ -18,7 +18,7 @@ public class LogService {
     }
 
     public Page<Log> getLogsByUsername(String username, Pageable pageable) {
-        return logRepository.findByUsername(username, pageable);
+        return logRepository.findByUsernameOrderByTimestampDesc(username, pageable);
     }
 
     public Log saveLog(Log log) {

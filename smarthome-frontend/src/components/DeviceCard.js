@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import CustomButton from "./CustomButton";
 import DeviceDetails from "./DeviceDetails";
 
-const DeviceCard = ({ device, onClick }) => {
+const DeviceCard = ({ device, manage, remove }) => {
   const cardStyle = {
     backgroundColor: "#C5DBDD",
     borderRadius: "40px",
@@ -12,7 +12,7 @@ const DeviceCard = ({ device, onClick }) => {
   };
 
   return (
-    <Card style={cardStyle} onClick={onClick} className="device-card">
+    <Card style={cardStyle} className="device-card">
       <Card.Body>
         <Card.Title style={{ textAlign: "center" }}>
           {device.name || "Unnamed Device"}
@@ -27,8 +27,8 @@ const DeviceCard = ({ device, onClick }) => {
         <DeviceDetails device={device} />
 
         <div className="d-flex justify-content-around">
-          <CustomButton content="Manage" onClick={onClick}></CustomButton>
-          <CustomButton content="Remove" onClick={onClick}></CustomButton>
+          <CustomButton content="Manage" onClick={manage}></CustomButton>
+          <CustomButton content="Remove" onClick={remove}></CustomButton>
         </div>
       </Card.Body>
     </Card>
@@ -43,7 +43,8 @@ DeviceCard.propTypes = {
     brightness: PropTypes.number,
     temperature: PropTypes.number,
   }).isRequired,
-  onClick: PropTypes.func,
+  manage: PropTypes.func,
+  remove: PropTypes.func,
 };
 
 export default DeviceCard;
