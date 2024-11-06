@@ -33,7 +33,7 @@ const DeviceLogs = () => {
 
   return (
     <>
-      <Table striped bordered hover>
+      <Table className="m-4" striped bordered hover>
         <thead>
           <tr>
             <th>Device Name</th>

@@ -51,7 +51,7 @@ const DeviceModal = ({ device, show, handleClose }) => {
       } else {
         device.brightness = null;
       }
-      if (settings.status != device.status) {
+      if (settings.status !== device.status) {
         device.status = settings.status;
         status = settings.status;
         await updateDeviceSettings(device.id, { status });
