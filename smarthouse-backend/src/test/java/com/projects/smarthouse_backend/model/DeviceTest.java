@@ -25,7 +25,6 @@ class DeviceTest {
         device.setStatus(true);
         device.setBrightness(75);
         device.setTemperature(22);
-        device.setMotionDetectionEnabled(false);
 
         assertEquals(1L, device.getId());
         assertEquals("Test Light", device.getName());
@@ -33,7 +32,6 @@ class DeviceTest {
         assertTrue(device.isStatus());
         assertEquals(75, device.getBrightness());
         assertEquals(22, device.getTemperature());
-        assertFalse(device.getMotionDetectionEnabled());
     }
 
     @Test
